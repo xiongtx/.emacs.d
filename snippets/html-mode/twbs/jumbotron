@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: jumbotron
+# key: bs:jumbo
+# binding: direct-keybinding
+# --
+<div class="jumbotron">
+  <h1>${1:title}</h1>
+  <p>${2:content}</p>
+  <p><a class="btn btn-primary btn-lg" href="${4:link}" role="button">${3:button}</a></p>
+</div>

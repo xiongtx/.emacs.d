@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: button-group-vertical
+# key: bs:buttongv
+# binding: direct-keybinding
+# --
+<div class="btn-group-vertical" role="group" aria-label="${1:label}">
+  $0
+</div>

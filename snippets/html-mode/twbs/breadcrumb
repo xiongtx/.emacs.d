@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: breadcrumb
+# key: bs:bc
+# binding: direct-keybinding
+# --
+<ol class="breadcrumb">
+  <li><a href="#">${1:}</a></li>
+  <li><a href="#">${2:}</a></li>
+  <li class="active">Data</li>
+</ol>
+
+$0

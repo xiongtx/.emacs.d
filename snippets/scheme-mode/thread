@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: thread
+# key: thread
+# binding: direct-keybinding
+# --
+(thread (lambda ()
+	 ($0)))

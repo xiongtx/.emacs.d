@@ -1,0 +1,4 @@
+alias cdow cd (*-eshell-other-window-buffer-file-directory)
+alias ff find-file $1
+alias ffow find-file-other-window $1
+alias ll ls -l

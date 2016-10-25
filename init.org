@@ -1,0 +1,2020 @@
+#+BABEL: :cache yes
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{inconsolata}
+#+PROPERTY: header-args :tangle yes :comments org
+
+#+TITLE: Emacs Configuration File
+#+AUTHOR: Tianxiang Xiong
+
+# Adapted from Lars Tveito's excellent configuration file
+# See: https://github.com/larstvei/dot-emacs/blob/master/init.org
+
+* Table of Contents							:TOC:
+ - [[#introduction][Introduction]]
+ - [[#meta][Meta]]
+   - [[#tangling][Tangling]]
+   - [[#automatic-tangling][Automatic tangling]]
+ - [[#package-management][Package Management]]
+ - [[#configurations][Configurations]]
+   - [[#about-emacs][About Emacs]]
+   - [[#about-me][About Me]]
+   - [[#blog][Blog]]
+   - [[#buffer][Buffer]]
+   - [[#clojure][Clojure]]
+   - [[#comint][Comint]]
+   - [[#comment][Comment]]
+   - [[#common-lisp][Common Lisp]]
+   - [[#company][Company]]
+   - [[#compilation][Compilation]]
+   - [[#css][CSS]]
+   - [[#cursor][Cursor]]
+   - [[#default-functionality][Default Functionality]]
+   - [[#default-major-mode][Default Major Mode]]
+   - [[#discover-my-major][Discover My Major]]
+   - [[#ediff][Ediff]]
+   - [[#edit-server][Edit Server]]
+   - [[#elisp][Elisp]]
+   - [[#emmet][Emmet]]
+   - [[#eshell][Eshell]]
+   - [[#expand-region][Expand Region]]
+   - [[#font][Font]]
+   - [[#fill-column][Fill Column]]
+   - [[#frame][Frame]]
+   - [[#fringe][Fringe]]
+   - [[#helm][Helm]]
+   - [[#helm-dash][Helm Dash]]
+   - [[#helm-descbinds][Helm Descbinds]]
+   - [[#info][Info]]
+   - [[#javascript][JavaScript]]
+   - [[#json][JSON]]
+   - [[#keyboard-macro][Keyboard Macro]]
+   - [[#latex][LaTeX]]
+   - [[#line-and-column-numbers][Line and Column Numbers]]
+   - [[#macros][Macros]]
+   - [[#magit][Magit]]
+   - [[#markdown][Markdown]]
+   - [[#menubar-and-toolbar][Menubar and Toolbar]]
+   - [[#mode-line][Mode Line]]
+   - [[#modes][Modes]]
+   - [[#multiple-cursors][Multiple Cursors]]
+   - [[#nand2tetris][Nand2Tetris]]
+   - [[#open][Open]]
+   - [[#org][Org]]
+   - [[#pages][Pages]]
+   - [[#pdf-tools][PDF Tools]]
+   - [[#performance][Performance]]
+   - [[#popwin][Popwin]]
+   - [[#prettify-symbols][Prettify Symbols]]
+   - [[#projectile][Projectile]]
+   - [[#quit][Quit]]
+   - [[#sass][Sass]]
+   - [[#scheme][Scheme]]
+   - [[#scratch-buffer][Scratch Buffer]]
+   - [[#scrollbar][Scrollbar]]
+   - [[#search-and-replace][Search and Replace]]
+   - [[#sexp][Sexp]]
+   - [[#sgml][SGML]]
+   - [[#shell][Shell]]
+   - [[#smartparens][Smartparens]]
+   - [[#spelling][Spelling]]
+   - [[#splash-screen][Splash Screen]]
+   - [[#terminal-mode][Terminal Mode]]
+   - [[#theme][Theme]]
+   - [[#toggle][Toggle]]
+   - [[#whitespace-cleanup][Whitespace Cleanup]]
+   - [[#window-management][Window Management]]
+   - [[#yasnippet][YASnippet]]
+ - [[#microsoft-windows][Microsoft Windows]]
+   - [[#keybindings][Keybindings]]
+ - [[#mac-osx][Mac OSX]]
+   - [[#keybindings-1][Keybindings]]
+ - [[#license][License]]
+
+* Introduction
+This is an Emacs configuration file written in Org-mode. It is adapted from
+Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init.org][configuration file]] on GitHub.
+
+* Meta
+
+** Tangling
+
+   After cloning from [[https://github.com/xiongtx/.emacs.d][GitHub]], there is no =init.el= file, only an =init.org=
+   file (this file).
+
+   To produce an =init.el= file, either:
+
+   - Open =init.org= and use =C-c C-v t= to call ~org-babel-tangle~, which
+     extracts code blocks from the current file into =init.el=, then restart
+     Emacs, or
+   - Run the following [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Batch-Mode.html][command in a shell]] before starting Emacs:
+
+     #+BEGIN_SRC sh
+       emacs --batch \
+             --load "/usr/local/share/emacs/25.1/lisp/org/ob-tangle.elc" \
+             --eval "(org-babel-tangle-file \"~/.emacs.d/init.org\")"
+     #+END_SRC
+
+     This assumes [[https://lists.gnu.org/archive/html/emacs-devel/2016-09/msg00451.html][Emacs 25.1]] built from source on GNU/Linux. Otherwise, swap
+     out the load path of =ob-tangle.elc= for whatever is appropriate.
+
+** Automatic tangling
+
+   To avoid having to tangle manually each time a change is made, we can add a
+   function to ~after-save-hook~ to tangle the =init.org= after saving.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun *-tangle-init-file ()
+      "Tangle the current buffer if it is the init.org file."
+      (when (equal (buffer-file-name)
+                   (expand-file-name (concat user-emacs-directory "init.org")))
+        (org-babel-tangle)))
+
+    (add-hook 'after-save-hook #'*-tangle-init-file)
+  #+END_SRC
+
+* Package Management
+  Managing extensions in Emacs is simplified using =package=, which is built
+  into Emacs 24 and newer. To load downloaded packages, we need to initialize
+  =package=.
+
+  - First, we list the package archives we'd like to install packages from.
+
+    #+BEGIN_SRC emacs-lisp
+    (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                             ("melpa" . "http://melpa.milkbox.net/packages/")))
+    #+END_SRC
+
+  - If the variable =package-enable-at-startup= is non-nil, package
+    initialization occurs after the init file is loaded, but before
+    =after-init-hook=. We want to load packages /before/ the init file is
+    loaded, because we'll be referencing packages in the init file. Therefore,
+    we need to initialize our packages manually.
+
+    #+BEGIN_SRC emacs-lisp
+    (setq package-enable-at-startup nil)
+    (package-initialize)
+    #+END_SRC
+
+  - Make sure that we have the list of packages available.
+
+    #+BEGIN_SRC emacs-lisp
+    (unless package-archive-contents
+      (package-refresh-contents))
+    #+END_SRC
+
+  - Define a list of packages that we want to install. =Package= is smart
+    enough to install dependencies automatically.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq *-package-list '(auctex
+                             cider
+                             clojure-mode
+                             company
+                             company-auctex
+                             company-quickhelp
+                             company-tern
+                             discover-my-major
+                             edit-server
+                             emmet-mode
+                             expand-region
+                             flycheck
+                             flycheck-color-mode-line
+                             haskell-mode
+                             helm
+                             helm-cider
+                             helm-dash
+                             helm-descbinds
+                             helm-describe-modes
+                             helm-pages
+                             helm-projectile
+                             hydra
+                             js-doc
+                             js2-mode
+                             json-mode
+                             key-chord
+                             less-css-mode
+                             macrostep
+                             magit
+                             markdown-mode
+                             mediawiki
+                             multiple-cursors
+                             nand2tetris
+                             page-break-lines
+                             popwin
+                             projectile
+                             python-mode
+                             rainbow-mode
+                             scss-mode
+                             slime
+                             slime-company
+                             smartparens
+                             tern
+                             toc-org
+                             use-package
+                             yaml-mode
+                             yasnippet
+                             zenburn-theme))
+    #+END_SRC
+
+  - Install the missing packages.
+
+    #+BEGIN_SRC emacs-lisp
+    (dolist (package *-package-list)
+      (unless (package-installed-p package)
+        (package-install package)))
+    #+END_SRC
+
+  - Define a function to easily upgrade all packages and delete obsolete ones.
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defun *-package-upgrade ()
+        "Upgrade all packages"
+        (interactive)
+        (save-window-excursion
+          (with-temp-buffer
+            (package-list-packages)
+            (package-menu-mark-upgrades)
+            (package-menu-mark-obsolete-for-deletion)
+            (package-menu-execute t))))
+    #+END_SRC
+
+  - Use a hydra, along with =helm=, to create a package-related menu.
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defhydra hydra-package (:color blue)
+        "
+      Packages                                                           [_q_] quit
+      ^^---------------------------------------------------------------------------
+      [_d_] describe
+      [_i_] install
+      [_l_] list
+      [_L_] list (no fetch)
+      [_U_] upgrade all
+      "
+      ("d" describe-package nil)
+      ("i" package-install nil)
+      ("l" package-list-packages nil)
+      ("L" package-list-packages-no-fetch nil)
+      ("U" *-package-upgrade nil)
+      ("q" nil nil))
+
+      (define-key help-map "p" 'hydra-package/body)
+    #+END_SRC
+
+* Configurations
+** About Emacs
+   - Replace the =*About GNU Emacs*= buffer with Emacs and user info.
+
+   #+BEGIN_SRC emacs-lisp
+     (defhydra hydra-about-emacs ()
+       "
+     About Emacs                                                        [_q_] quit
+     ^^---------------------------------------------------------------------------
+              PID:    %s(emacs-pid)
+           Uptime:    %s(emacs-uptime)
+        Init time:    %s(emacs-init-time)
+        Directory:    %s(identity user-emacs-directory)
+     Invoked from:    %s(concat invocation-directory invocation-name)
+          Version:    %s(identity emacs-version)
+
+     User Info
+     ^^---------------------------------------------------------------------------
+        User name:    %s(user-full-name)
+     Login (real):    %s(user-login-name) (%s(user-real-login-name))
+       UID (real):    %s(user-uid) (%s(user-real-uid))
+       GID (real):    %s(group-gid) (%s(group-real-gid))
+     Mail address:    %s(identity user-mail-address)
+     "
+       ("q" nil nil))
+
+     (global-set-key (kbd "C-h C-a") #'hydra-about-emacs/body)
+   #+END_SRC
+
+   - System info
+
+     #+BEGIN_SRC emacs-lisp
+       (defhydra hydra-system-info ()
+         "
+       System Info                                                        [_q_] quit
+       ^^---------------------------------------------------------------------------
+           System name:    %s(system-name)
+           System type:    %s(identity system-type)
+         System config:    %s(identity system-configuration)
+
+       Memory
+       ^^---------------------------------------------------------------------------
+                  Used:    %s(format \"%0.0f percent\"
+                                     (* 100 (- 1 (/ (cl-second (memory-info))
+                                                    (float (cl-first (memory-info)))))))
+              Free RAM:    %s(format \"%0.1f GB (of %0.1f GB)\"
+                                     (/ (float (cl-second (memory-info))) 1048576)
+                                     (/ (float (cl-first (memory-info))) 1048576))
+             Free swap:    %s(format \"%0.1f GB (of %0.1f GB)\"
+                                     (/ (float (cl-fourth (memory-info))) 1048576)
+                                     (/ (float (cl-third (memory-info))) 1048576))
+           Pure memory:    %s(format \"%0.1f GB\" (/ (float pure-bytes-used) 1048576))
+
+       Garbage Collection
+       ^^---------------------------------------------------------------------------
+              GCs done:    %`gcs-done
+           GCs elapsed:    %s(format-seconds \"%M, %S\" gc-elapsed)
+        Cons threshold:    %`gc-cons-threshold
+       Cons percentage:    %`gc-cons-percentage
+       "
+         ("q" nil nil))
+
+       (global-set-key (kbd "C-h C-s") #'hydra-system-info/body)
+     #+END_SRC
+** About Me
+   - Set personal information, like name and e-mail.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'user-full-name "Tianxiang Xiong")
+       (customize-set-variable 'user-mail-address "tianxiang.xiong@gmail.com")
+     #+END_SRC
+** Blog
+   - Use ~org-publish~ to manage my [[http://xiongtx.github.io][GitHub blog]]. We need to set the
+     ~org-publish-project-alist~ variable to publish projects.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable
+        'org-publish-project-alist
+        '(("blog posts"
+           :base-directory "~/Dropbox/github/xiongtx.github.io/_org/"
+           :base-extension "org"
+           :body-only t
+           :html-extension "html"
+           :publishing-directory "~/Dropbox/github/xiongtx.github.io/"
+           :publishing-function org-html-publish-to-html
+           :recursive t)
+
+          ("blog static"
+           :base-directory "~/Dropbox/github/xiongtx.github.io/_org/"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+           :publishing-directory "~/Dropbox/github/xiongtx.github.io/"
+           :publishing-function org-publish-attachment
+           :recursive t)
+
+          ("blog" :components ("blog posts" "blog static"))))
+     #+END_SRC
+** Buffer
+   - Kill current buffer.
+
+     Do not use ~kill-current-buffer~, which is actually defined in
+     =menu-bar.el= and [[https://github.com/syl20bnr/spacemacs/issues/4929#issuecomment-221299989][has some weird logic]].
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-kill-this-buffer ()
+         "Kill the current buffer."
+         (interactive)
+         (kill-buffer (current-buffer)))
+
+       (global-set-key (kbd "C-c k") #'*-kill-this-buffer)
+     #+END_SRC
+
+   - Use unique buffer names. The =post-forward= style displays the buffer name
+     as =buffer|dir1/dir2=.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq uniquify-buffer-name-style 'post-forward)
+     #+END_SRC
+
+   - Revert buffer with =<f5>= (refresh).
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (global-set-key (kbd "<f5>") #'revert-buffer)
+     #+END_SRC
+
+** Clojure
+   - [[https://github.com/clojure-emacs/clojure-mode#indentation-options][Custom indent]] special forms and macros.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'clojure-mode
+         (define-clojure-indent
+           (defrecord '(2 nil nil (1)))
+           (deftype   '(2 nil nil (1)))
+           (implement '(1 (1)))
+           (letfn     '(1 ((:defn)) nil))
+           (match 1)
+           (proxy     '(2 nil nil (1)))
+           (reify     '(:defn (1)))
+           (specify   '(1 (1)))
+           (specify   '(1 (1)))))
+     #+END_SRC
+
+   - Use [[https://github.com/clojure-emacs/cider][CIDER]] when visiting Clojure files.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'clojure-mode
+         (add-hook 'clojure-mode-hook #'cider-mode))
+     #+END_SRC
+
+   - Use [[https://github.com/clojure-emacs/helm-cider][helm-cider]].
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'cider-mode
+         (add-hook 'cider-mode-hook #'helm-cider-mode))
+     #+END_SRC
+
+   - Look up Clojure documentation in a pop-up with CIDER's functionality.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-cider-symbol-full-doc (symbol)
+         "Return a string of the full documentation of SYMBOL, as given by
+       `cider-create-doc-buffer'."
+         (let ((buf (cider-create-doc-buffer symbol)))
+           (when buf
+             (with-current-buffer buf
+               (buffer-substring (point-min)
+                                 ; `-10' to exclude "[source]" line
+                                 (- (point-max) 10))))))
+
+       (defun *-cider-doc-popup ()
+         "Display CIDER documentation in a popup."
+         (interactive)
+         (let ((doc (*-cider-symbol-full-doc (cider-symbol-at-point)))
+               (x-gtk-use-system-tooltips nil))
+           (if (string= "" doc)
+               (message "Unknown symbol, or no documentation available.")
+             (pos-tip-show doc 'tooltip nil nil -1))))
+
+       (defun *-cider-doc-popup-on ()
+         "Turn `*-cider-doc-popup' by binding it to an appropriate key."
+         (define-key cider-mode-map (kbd "C-h C-j") #'*-cider-doc-popup))
+
+       ;; Only use pop-up documentation when CIDER is connected
+       (add-hook 'cider-connected-hook #'*-cider-doc-popup-on)
+     #+END_SRC
+** Comint
+   - Make prompt read-only.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'comint-prompt-read-only t)
+     #+END_SRC
+** Comment
+   - Comment or uncomment a region or line in a "do what I mean" fashion.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun comment-or-uncomment-region-or-line ()
+           "Comments or uncomments the region or the current line if there's no active region."
+           (interactive)
+           (let (beg end)
+               (if (region-active-p)
+                   (setq beg (region-beginning) end (region-end))
+                   (setq beg (line-beginning-position) end (line-end-position)))
+               (comment-or-uncomment-region beg end)
+               (forward-line)))
+     #+END_SRC
+
+   - Set convenient key binding to comment/uncomment line.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-;") #'comment-or-uncomment-region-or-line)
+     #+END_SRC
+
+** Common Lisp
+
+   - Open files in =lisp-mode=.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       ;; The SBCL configuration file is in Common Lisp
+       (add-to-list 'auto-mode-alist '("\\.sbclrc\\'" . lisp-mode))
+
+       ;; Open files with .cl extension in lisp-mode
+       (add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
+     #+END_SRC
+
+   - Settings for [[https://github.com/slime/slime][SLIME]] (Superior Lisp Interaction Mode for Emacs).
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (setq inferior-lisp-program "/usr/bin/sbcl --noinform")
+       (setq slime-contribs '(slime-fancy))
+     #+END_SRC
+
+   - Use [[https://github.com/anwyn/slime-company][slime-company]], which integrates =company-mode= with SLIME.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (add-to-list 'slime-contribs 'slime-company)
+     #+END_SRC
+
+   - Set up SLIME contribs.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (slime-setup)
+     #+END_SRC
+
+   - Create SLIME REPL when visiting Common Lisp file.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (defun *-slime-create-or-switch-to ()
+         "Start an inferior Lisp process and connect to its Swank
+       server if none exists, or switch to existing one.
+
+       This is always done in another window. If there is only one
+       window, it is split horizontally.
+
+       Do not switch to SLIME window if Helm is active; this allows
+       previewing files in Helm without trouble."
+         (interactive)
+         (save-selected-window
+           (if (not (slime-connected-p))
+               (slime)
+             (if (> (length (window-list)) 1)
+                 (other-window 1)
+               (split-window-horizontally)
+               (other-window 1)
+               (*-rotate-buffers-in-windows))
+             (unless (helm-alive-p)
+               (set-window-buffer (selected-window)
+                                  (slime-output-buffer))))))
+
+       (add-hook 'lisp-mode-hook #'*-slime-create-or-switch-to)
+     #+END_SRC
+
+   - Use =hyperspec= commands with SLIME.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (with-eval-after-load 'slime
+         (define-key slime-mode-map (kbd "C-c C-d C-s") #'common-lisp-hyperspec))
+     #+END_SRC
+
+** Company
+   - Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'after-init-hook #'global-company-mode)
+     #+END_SRC
+
+   - Reduce completion menu time delay to minimum.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'company-idle-delay 0)
+     #+END_SRC
+
+   - More easily navigate the completion menu.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'company
+         (define-key company-active-map (kbd "C-n") #'company-select-next)
+         (define-key company-active-map (kbd "C-p") #'company-select-previous))
+     #+END_SRC
+
+   - Show quick-access numbers of completion options.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (customize-set-variable 'company-show-numbers t)
+     #+END_SRC
+
+   - Use [[https://github.com/expez/company-quickhelp][company-quickhelp]], which shows a documentation pop-up during
+     =company-mode= completion.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (company-quickhelp-mode t)
+
+       ;; Do not show pop-up automatically
+       (customize-set-variable 'company-quickhelp-delay nil)
+
+       ;; Define binding for showing pop-up manually in company-active-map instead of
+       ;; company-quickhelp-mode-map; this activates it only when we want completion.
+       (with-eval-after-load 'company
+         (define-key company-active-map (kbd "C-j") #'company-quickhelp-manual-begin))
+     #+END_SRC
+
+     There's also ~company-show-doc-buffer~, which is built into
+     ~company-mode-map~, but the selections disappear when the doc buffer
+     appears (maybe it just doesn't play nice with =popwin=?). Furthermore,
+     it's easier to read the documentation when it's right next to the
+     candidate.
+
+** Compilation
+
+   - Use more convenient bindings for ~previous-error~ and ~next-error~.
+
+     #+BEGIN_SRC emacs-lisp
+       (dolist (key (append (where-is-internal #'previous-error)
+                            (where-is-internal #'next-error)))
+         (global-unset-key key))
+       (global-set-key (kbd "M-N") #'next-error)
+       (global-set-key (kbd "M-P") #'previous-error)
+     #+END_SRC
+
+   - Quickly bring up last compilation buffer.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-last-compilation-buffer ()
+         "Display last compilation buffer in current window."
+         (interactive)
+         (if (buffer-live-p compilation-last-buffer)
+             (set-window-buffer (get-buffer-window) compilation-last-buffer)
+           (message "Last compilation buffer is killed.")))
+
+       (global-set-key (kbd "C-x c") #'*-last-compilation-buffer)
+     #+END_SRC
+** CSS
+   - Use =emmet-mode=.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'css-mode-hook #'emmet-mode)
+     #+END_SRC
+
+   - Use =rainbow-mode=.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'css-mode-hook #'rainbow-mode)
+     #+END_SRC
+
+   - Define function to clean up Sass file.
+
+   - Beautify the buffer with =web-beautify=.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; (add-hook 'css-mode-hook
+       ;;           (lambda ()
+       ;;             (add-hook 'before-save-hook
+       ;;                       'web-beautify-css-buffer t t)))
+
+       (with-eval-after-load 'css-mode
+         (define-key css-mode-map (kbd "C-c b") #'web-beautify-css))
+     #+END_SRC
+
+** Cursor
+  - Do not blink the cursor.
+
+    #+BEGIN_SRC emacs-lisp
+      (blink-cursor-mode 0)
+    #+END_SRC
+
+** Default Functionality
+   - Some functionality is turned off by default to avoid confusing new
+     users. Turn them back on.
+
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (put 'narrow-to-defun 'disabled nil)
+       (put 'narrow-to-page 'disabled nil)
+       (put 'narrow-to-region 'disabled nil)
+     #+END_SRC
+** Default Major Mode
+  - Set the default major mode to =emacs-lisp-mode=.
+
+    #+BEGIN_SRC emacs-lisp
+      (customize-set-variable 'initial-major-mode #'emacs-lisp-mode)
+    #+END_SRC
+
+** Discover My Major
+   - Use [[https://github.com/steckerhalter/discover-my-major][discover-my-major]], which displays key bindings and their meaning for
+     the current Emacs major mode.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key help-map (kbd "C-k") #'discover-my-major)
+     #+END_SRC
+
+** Ediff
+
+   - Better defaults for =ediff=.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Show control panel in single frame
+       (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+       ;; Split windows horizontally
+       (setq ediff-split-window-function 'split-window-horizontally)
+
+       ;; Only highlight one diff
+       (setq-default ediff-highlight-all-diffs nil)
+     #+END_SRC
+
+   - Useful diff commands.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-x d") #'ediff-current-file)
+     #+END_SRC
+
+   - [[http://emacs.stackexchange.com/a/21336/10269][Expand]] =outline-mode= (including =org-mode=) buffers when diffing.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'ediff-prepare-buffer-hook #'outline-show-all)
+     #+END_SRC
+** Edit Server
+   - Use [[https://github.com/stsquad/emacs_chrome][emacs-chrome]], which allows editing of text areas and other editable
+     text elements of a page with Emacs.
+
+     Obviously, we need to install the [[https://chrome.google.com/webstore/detail/edit-with-emacs/ljobjlafonikaiipfkggjbhkghgicgoh][Edit with Emacs]] extension for Chrome.
+
+     For this to work, we need to run an "edit server" on our machine. This
+     is because, as a security measure, extensions in Chrome(ium) cannot spawn
+     new processes.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Start edit-server
+       (when (require 'edit-server nil t)
+         ; Edit in a new buffer instead of a new frame
+         (setq edit-server-new-frame nil)
+         (edit-server-start))
+     #+END_SRC
+
+   - Associated common websites with major modes.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (setq edit-server-url-major-mode-alist
+             '(("github\\.com" . markdown-mode)
+               ("reddit\\.com" . markdown-mode)
+               ("stackexchange\\.com" . markdown-mode)
+               ("stackoverflow\\.com" . markdown-mode)))
+     #+END_SRC
+** Elisp
+   - Use [[http://www.emacswiki.org/emacs/ElDoc][eldoc-mode]], which shows function signatures in the echo area.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     ;; Don't delay `eldoc' display
+     (customize-set-variable 'eldoc-idle-delay 0)
+
+     ;; Activate `eldoc' for certain modes
+     (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+     (add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
+   #+END_SRC
+
+   - Use [[http://www.emacswiki.org/emacs/PosTip][pos-tip]] to create documentation pop-up for Emacs Lisp. Heavily
+     inspired by [[http://blog.jenkster.com/2013/12/popup-help-in-emacs-lisp.html][Popup Help in Emacs Lisp]] and [[https://github.com/Fuco1/clippy.el][clippy]].
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (require 'pos-tip)
+
+       (defun *-describe-symbol-popup ()
+         "Display full documentation of symbol in a pop-up window."
+         (interactive)
+         (let ((doc (*-symbol-full-doc (symbol-at-point)))
+               (x-gtk-use-system-tooltips nil))
+           (if (string= "" doc)
+               (message "Unknown symbol, or no documentation available.")
+             (pos-tip-show doc 'tooltip nil nil -1))))
+
+       (defmacro *-symbol-full-doc (symbol)
+         "Return a string of the full documentation of SYMBOL, as given by
+       `help-xref-interned'.
+
+       If `popwin-mode' is active, disable it temporarily. The value of
+       `popwin-mode' is thus always nil, even when the mode is active.'"
+         (let* ((sym (make-symbol " sym "))
+                (form `(let ((,sym ,symbol))
+                         (with-temp-buffer
+                           (let ((help-xref-following t))
+                             (help-mode)
+                             (help-xref-interned ,sym)
+                             (buffer-string))))))
+           (if (fboundp #'popwin-mode)
+               `(let ((old-popwin popwin-mode))
+                  (popwin-mode -1)
+                  (unwind-protect
+                      ,form
+                    (popwin-mode (or old-popwin -1))))
+             ,form)))
+
+       
+       ;;;; Key bindings
+       (define-key help-map "j" #'*-describe-symbol-popup)
+       (define-key help-map (kbd "C-j") #'*-describe-symbol-popup)
+     #+END_SRC
+** Emmet
+   - Move cursor between first pair of quotes after expansion.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq emmet-move-cursor-between-quotes t)
+     #+END_SRC
+
+   - Do not use certain keybindings.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'emmet-mode
+         (define-key emmet-mode-keymap (kbd "C-j") nil)
+         (define-key emmet-mode-keymap (kbd "C-M-<left>") nil)
+         (define-key emmet-mode-keymap (kbd "C-M-<right>") nil))
+     #+END_SRC
+
+** Eshell
+   - We want to visit or rename an =eshell= buffer.
+
+     This is modified from similar code from [[http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/][Enigma Curry]] involving =ansi-term=.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-eshell-visit-other-window ()
+         "Visit or rename eshell buffer in the other window.
+       If the current buffer is:
+           1) an eshell buffer, rename it
+           2) not an eshell buffer, create an eshell buffer or switch to an
+              existing one (eshell handles this automatically) in the other
+              window."
+         (interactive)
+         (if (string= "eshell-mode" major-mode)
+             (call-interactively 'rename-buffer)
+           (progn
+             (other-window 1)
+             (eshell))))
+     #+END_SRC
+
+   - Convenient key binding to visit =eshell=.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "M-$") '*-eshell-visit-other-window)
+     #+END_SRC
+
+   - Initializations for =eshell=.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-eshell-kill-input ()
+         "Kill current input at an `eshell' prompt."
+         (interactive)
+         (eshell-bol)
+         (kill-line))
+
+       (defun *-eshell-init ()
+         "Init forms to run as part of `eshell-mode-hook'."
+         (yas-minor-mode -1)
+         (toggle-truncate-lines 1)
+         (smartparens-mode t)
+         (define-key eshell-mode-map (kbd "C-k") #'*-eshell-kill-input)
+         (define-key eshell-mode-map [remap eshell-list-history] #'helm-eshell-history)
+         (define-key eshell-mode-map [remap eshell-pcomplete] #'company-manual-begin))
+
+       (add-hook 'eshell-mode-hook #'*-eshell-init)
+     #+END_SRC
+
+   - Function to easily switch Eshell directory to other window's buffer's
+     file directory.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-eshell-other-window-buffer-file-directory ()
+         "Return other window's buffer's file directory, if it exists. NIL
+       otherwise.
+
+       If the other window's buffer is a Dired buffer, switch to its
+       directory."
+         (with-current-buffer (window-buffer (next-window nil 'no-minibuffer))
+           (let ((file (buffer-file-name)))
+             (cond (file (file-name-directory file))
+                   ((eq major-mode 'dired-mode) dired-directory)))))
+     #+END_SRC
+
+** Expand Region
+   - Use [[https://github.com/magnars/expand-region.el][expand-region]], which increases selected region by semantic units.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "M-[") #'er/expand-region)
+       (global-set-key (kbd "M-]") #'er/contract-region)
+     #+END_SRC
+
+** Font
+   - Change the default font.
+
+     #+BEGIN_SRC emacs-lisp
+       (when (member "DejaVu Sans Mono" (font-family-list))
+           (let ((height (if (string= system-type "darwin") 120 110)))
+             (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height height)))
+     #+END_SRC
+
+** Fill Column
+  - Fill column to 78 chars.
+
+    The width of 78 is chosen so that text centered on an 80-char-wide
+    interface will have a column of white space on each side.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq-default fill-column 78)
+    #+END_SRC
+
+** Frame
+  - Make frame full-screen. We cannot use =toggle-frame-fullscreen= because no
+    frame has been created when the init file is loaded.
+
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'default-frame-alist '(fullscreen . fullboth))
+    #+END_SRC
+
+  - Set keybinding to iconify (minimize) or de-iconify frame.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "s--") #'iconify-or-deiconify-frame)
+    #+END_SRC
+** Fringe
+   - Hide fringes.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (fringe-mode 0)
+     #+END_SRC
+** Helm
+   - Configure [[https://github.com/emacs-helm/helm][helm]], an incremental completion and selection narrowing
+     framework. See the [[https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/.emacs.el][author's config file]] as a reference.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'helm-config)
+       (helm-mode t)
+
+       ;;; Let helm use current window
+       (customize-set-variable 'helm-split-window-default-side 'same)
+
+       ;; Auto-complete file names when finding files
+       (customize-set-variable 'helm-ff-auto-update-initial-value t)
+     #+END_SRC
+
+   - Change the prefix key for =helm= from =C-x c= to something else, because
+     =C-x c= is too close to =C-x C-c=, which is bound to the command
+     =save-buffers-kill-terminal=.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-c h") 'helm-command-prefix)
+       (global-unset-key (kbd "C-x c"))
+     #+END_SRC
+
+   - Bind common =helm= commands to more accessible key sequences.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Resume helm
+       (global-set-key (kbd "M-r") #'helm-resume)
+
+       ;; Navigate between sources
+       (define-key helm-map (kbd "C-o") #'helm-previous-source)
+       (define-key helm-map (kbd "C-l") #'helm-next-source)
+
+       ;; Commands
+       (global-set-key (kbd "<menu>") #'helm-M-x)
+       (global-set-key (kbd "M-<menu>") #'helm-run-external-command)
+       (global-set-key (kbd "M-x") #'helm-M-x)
+       (global-set-key (kbd "M-X") #'helm-run-external-command)
+
+       ;; Buffers
+       (define-key ctl-x-map "b"  #'helm-mini)
+       (global-set-key [remap list-buffers] #'helm-buffers-list)
+
+       ;; Files
+       (global-set-key [remap find-file] #'helm-find-files)
+       (define-key ctl-x-map (kbd "C-r") #'helm-recentf)
+
+       ;; Search
+       (global-set-key (kbd "M-i") #'helm-semantic-or-imenu)
+       (global-set-key (kbd "M-I") #'helm-imenu-in-all-buffers)
+       (global-set-key (kbd "M-o") #'helm-occur)
+       (global-set-key (kbd "M-s f") #'helm-find)
+       (global-set-key (kbd "M-s g") #'helm-do-grep-ag)
+
+       ;; Apropos
+       (global-set-key [remap apropos-command] #'helm-apropos)
+       (global-set-key [remap describe-function] #'helm-apropos)
+       (global-set-key [remap describe-variable] #'helm-apropos)
+
+       ;; Regexp
+       (define-key help-map "r" #'helm-regexp)
+
+       ;; Source code
+       (global-set-key [remap find-library] #'helm-locate-library)
+       (define-key help-map "l" #'helm-locate-library)
+
+       ;; Kill ring
+       (global-set-key (kbd "M-y") #'helm-show-kill-ring)
+
+       ;; Mark rings
+       (define-key help-map (kbd "SPC") #'helm-all-mark-rings)
+
+       ;; Registers
+       (global-set-key [remap insert-register] #'helm-register)
+
+       ;; Bookmarks
+       (define-key ctl-x-r-map "b" #'helm-filtered-bookmarks)
+
+       ;; Chars
+       (global-set-key [remap insert-char] #'helm-ucs)
+
+       ;; Evaluation
+       (define-key (current-global-map) [remap eval-expression]
+         #'helm-eval-expression-with-eldoc)
+
+       ;; Tags
+       (global-set-key [remap find-tag] #'helm-etags-select)
+       (global-set-key [remap xref-find-definitions] #'helm-etags-select)
+
+       ;; Processes
+       (define-key help-map "t" #'helm-top)
+     #+END_SRC
+
+   - Reduce sources for ~helm-apropos~, which should improve speed.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'helm-apropos-function-list
+                               '(helm-def-source--emacs-commands
+                                 helm-def-source--emacs-functions
+                                 helm-def-source--emacs-variables
+                                 helm-def-source--emacs-faces))
+     #+END_SRC
+
+   - Turn off [[https://github.com/m2ym/popwin-el][popwin]] for Help buffers when using Helm and restore it after
+     existing Helm.
+
+     In a two-window configuration, Helm will display the Help buffer from
+     persistent action in the other window. Having =popwin= for Help buffers
+     brings up /another/, pop-up Help buffer.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-popwin-help-mode-off ()
+         "Turn `popwin-mode' off for *Help* buffers."
+         (when (boundp 'popwin:special-display-config)
+           (customize-set-variable 'popwin:special-display-config
+                                   (delq 'help-mode popwin:special-display-config))))
+
+       (defun *-popwin-help-mode-on ()
+         "Turn `popwin-mode' on for *Help* buffers."
+         (when (boundp 'popwin:special-display-config)
+           (customize-set-variable 'popwin:special-display-config
+                                   (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
+
+       (add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
+       (add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
+     #+END_SRC
+
+** Helm Dash
+   - Use [[https://github.com/areina/helm-dash][helm-dash]], a Helm interface for [[https://kapeli.com/dash][Dash]] docsets.
+
+     To use =helm-dash=, first install docsets via
+     ~helm-dash-install-docset~. Docsets are installed to
+     ~helm-dash-docsets-path~, which is =~/.docsets= by default.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Set `helm-dash' to `C-h d', which is normally `apropos-documentation'
+       (define-key help-map "d" 'helm-dash)
+
+       ;; Set minimum entry length to display docset elements
+       ;; 0 facilitates discoverability, but can be slow with too many docsets
+       (customize-set-variable 'helm-dash-min-length 0)
+     #+END_SRC
+
+** Helm Descbinds
+   - Use [[https://github.com/emacs-helm/helm-descbinds][helm-descbinds]] to present keybindings.
+
+     #+BEGIN_SRC emacs-lisp
+       (helm-descbinds-mode)
+
+       ;; Show binding descriptions in same window
+       (customize-set-variable 'helm-descbinds-window-style 'split-window)
+     #+END_SRC
+
+** Info
+   - Use better faces.
+
+     #+BEGIN_SRC emacs-lisp
+       (set-face-attribute 'Info-quoted nil
+                           :family "Monospace"
+                           :inherit 'org-special-keyword
+                           :slant 'italic)
+     #+END_SRC
+
+   - Access commonly-used Info files through a hydra.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (defhydra hydra-helm-info (:color blue)
+         "
+       Common Lisp                                    [_a_] all  [_d_] dir  [_r_] resume
+       ^^^^^^---------------------------------------------------------------------------
+       [_s_] slime (SLIME)
+
+       Emacs
+       ^^^^^^---------------------------------------------------------------------------
+       [_e_] emacs (The Emacs Editor)
+       [_i_] eintr (An Introduction to Programming in Emacs Lisp)
+       [_l_] elisp (Emacs Lisp)
+       [_o_] org   (Org Mode Manual)
+
+       Scheme
+       ^^^^^^---------------------------------------------------------------------------
+       [_g_] guile (The Guile Reference Manual)
+       "
+         ("a" helm-info nil)
+         ("d" Info-directory nil)
+         ("e" helm-info-emacs nil)
+         ("g" helm-info-guile nil)
+         ("i" helm-info-eintr nil)
+         ("l" helm-info-elisp nil)
+         ("o" helm-info-org nil)
+         ("r" info nil)
+         ("s" helm-info-slime nil))
+
+       (define-key help-map "i" #'hydra-helm-info/body)
+     #+END_SRC
+
+** JavaScript
+   - Use =js2-mode= instead of the default =js-mode=.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+     #+END_SRC
+
+   - Style configs.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'js
+         (customize-set-value 'js-indent-level 2))
+     #+END_SRC
+
+   - Use [[https://github.com/mooz/js-doc][js-doc]] for JavaScript documentation.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Set values
+       (customize-set-variable 'js-doc-author user-full-name)
+       (customize-set-variable 'js-doc-mail-address user-mail-address)
+
+       ;; Define keybindings in `js2-mode'
+       (with-eval-after-load 'js2-mode
+         (define-key js2-mode-map (kbd "C-c d") #'js-doc-insert-function-doc)
+         (define-key js2-mode-map (kbd "@") #'js-doc-insert-tag))
+     #+END_SRC
+
+   - Use =tern= with =company=.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Use tern with js2-mode
+       (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+
+       ;; Use company-mode with tern
+       (with-eval-after-load 'company
+         (add-to-list 'company-backends 'company-tern))
+     #+END_SRC
+
+   - Use =web-beautify=.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'js2-mode
+         (add-hook 'js2-mode-hook
+                   (lambda ()
+                     (add-hook 'before-save-hook
+                               'web-beautify-js-buffer t t))))
+       (with-eval-after-load 'js2-mode
+         (define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+     #+END_SRC
+** JSON
+   - Use =web-beautify=.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'json-mode
+         (add-hook 'json-mode-hook
+                    (lambda ()
+                      (add-hook 'before-save-hook
+                                #'web-beautify-js-buffer t t))))
+
+       (with-eval-after-load 'json-mode
+         (define-key json-mode-map (kbd "C-c b") #'web-beautify-js))
+     #+END_SRC
+** Keyboard Macro
+   - Use =helm= for keyboard macros.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key kmacro-keymap "h" #'helm-execute-kmacro)
+     #+END_SRC
+** LaTeX
+   - Use [[https://github.com/alexeyr/company-auctex/][company-auctex]] for LaTeX completion.
+
+     #+BEGIN_SRC emacs-lisp
+       (company-auctex-init)
+     #+END_SRC
+** Line and Column Numbers
+  - Display column numbers.
+
+    #+BEGIN_SRC emacs-lisp
+      (column-number-mode t)
+    #+END_SRC
+
+** Macros
+   - Use [[https://github.com/joddie/macrostep/blob/master/macrostep.el][macrostep]], an interactive macro expanding tool. Great for checking
+     what your macro is expanding to!
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       ;; `C-x e' is usually kmacro-end-and-call-macro, which we never use
+       (define-key ctl-x-map "e" #'macrostep-expand)
+
+       ;; Exit macrostep via macrostep-collapse-all with `C-g'
+       (with-eval-after-load 'macrostep
+         (define-key macrostep-keymap (kbd "C-g") #'macrostep-collapse-all))
+     #+END_SRC
+
+** Magit
+   - Bind the =magit-status= command, which serves as Magit's entry point.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-c m") #'magit-status)
+     #+END_SRC
+** Markdown
+   - Use [[http://pandoc.org/][pandoc]] as Markdown converter.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (if (executable-find "pandoc")
+           (customize-set-variable 'markdown-command "pandoc"))
+     #+END_SRC
+** Menubar and Toolbar
+  - Disable the menu bar, but make it toggleable, since menus can be useful
+    for exploring new modes.
+
+    #+BEGIN_SRC emacs-lisp
+      (menu-bar-mode -1)
+
+      ;; Toggle menu bar
+      (global-set-key (kbd "<f10>") #'menu-bar-mode)
+
+      ;; F10 was originally `menu-bar-open'; bind that to C-<f10> instead
+      (global-set-key (kbd "C-<f10>") #'menu-bar-open)
+    #+END_SRC
+
+  - Disable the toolbar.
+
+    #+BEGIN_SRC emacs-lisp
+      (tool-bar-mode 0)
+    #+END_SRC
+
+** Mode Line
+   - Show time in the mode line.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       ;; Display time
+       (display-time-mode t)
+
+       ;; Time format
+       (customize-set-variable 'display-time-string-forms
+                               '((propertize (concat dayname
+                                                     " " 12-hours ":" minutes " " (upcase am-pm))
+                                             'help-echo (format-time-string "%a, %b %e %Y" now))))
+
+       ;; Update display-time-string
+       (display-time-update)
+
+       ;; Remove display-time-string from global-mode-string
+       (setq global-mode-string (delq 'display-time-string global-mode-string))
+     #+END_SRC
+
+   - Show battery information in the mode line.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (display-battery-mode t)
+
+       ;; Remove battery-mode-line-string from global-mode-string
+       (setq global-mode-string (delq 'battery-mode-line-string global-mode-string))
+     #+END_SRC
+
+   - Modify mode line.
+
+     To get the battery and time information to align on the right end of the
+     mode line, we fill the mode line with spaces. This is adapted from [[http://stackoverflow.com/a/22971471/864684][Nicolas
+     Rougier's StackOverflow Answer]] on this issue.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (defun *-mode-line-fill (reserve)
+         "Return empty space using FACE and leaving RESERVE space on the right."
+         (unless reserve
+           (setq reserve 20))
+         (when (and window-system
+                    (eq 'right (get-scroll-bar-mode)))
+           (setq reserve (- reserve 3)))
+         (propertize " "
+                     'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
+
+       (setq-default mode-line-format
+                     '("%e"
+                       mode-line-front-space
+                       mode-line-client
+                       mode-line-remote
+                       mode-line-mule-info
+                       mode-line-modified
+                       "  "
+                       ;; Buffer name
+                       (:propertize mode-line-buffer-identification
+                                    face font-lock-builtin-face)
+                       "  "
+                       ;; Position
+                       "%p (%l,%c)"
+                       "  "
+                       ;; Mode, recursive editing, and narrowing information
+                       "("
+                       (:propertize "%["
+                                    face font-lock-warning-face)
+                       mode-name
+                       (:propertize "%]"
+                                    face font-lock-warning-face)
+                       (:eval (if (buffer-narrowed-p)
+                                  (concat " "
+                                          (propertize "Narrow"
+                                                      'face 'font-lock-warning-face))))
+                       ")"
+                       ;; Version control
+                       (:eval (when vc-mode
+                                (concat " "
+                                        vc-mode)))
+                       ;; Miscellaneous information
+                       "  "
+                       mode-line-misc-info
+
+                       (:eval (*-mode-line-fill (+ (length battery-mode-line-string)
+                                                   1
+                                                   (length display-time-string))))
+                       battery-mode-line-string
+                       " "
+                       display-time-string))
+     #+END_SRC
+** Modes
+
+   - Use [[https://github.com/emacs-helm/helm-describe-modes][helm-describe-modes]], which provides a Helm interface to Emacs’s
+     ~describe-mode~.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key [remap describe-mode] #'helm-describe-modes)
+     #+END_SRC
+** Multiple Cursors
+   - Use [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]] to easily mark things.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Define C-x m prefix (C-x m is usually `compose-mail')
+       (define-prefix-command '*-mc-map)
+       (define-key ctl-x-map "m" '*-mc-map)
+
+       ;; Globally useful
+       (define-key *-mc-map "m" #'mc/mark-all-dwim)
+
+       ;; Sometimes useful
+       (define-key *-mc-map "i" #'mc/insert-numbers)
+       (define-key *-mc-map "h" #'mc-hide-unmatched-lines-mode)
+       (define-key *-mc-map "a" #'mc/mark-all-like-this)
+
+       ;; Rarely useful
+       (define-key *-mc-map "d" #'mc/mark-all-symbols-like-this-in-defun)
+       (define-key *-mc-map "r" #'mc/reverse-regions)
+       (define-key *-mc-map "s" #'mc/sort-regions)
+       (define-key *-mc-map "l" #'mc/edit-lines)
+       (define-key *-mc-map "\C-a" #'mc/edit-beginnings-of-lines)
+       (define-key *-mc-map "\C-e" #'mc/edit-ends-of-lines)
+     #+END_SRC
+
+** Nand2Tetris
+
+   - Configs for [[https://github.com/CestDiego/nand2tetris.el/][nand2tetris.el]] for the [[https://www.coursera.org/learn/build-a-computer/][Build a Modern Computer from First Principles]] course.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-value 'nand2tetris-core-base-dir "~/Dropbox/coursera/build-a-computer/nand2tetris")
+
+       (add-to-list 'auto-mode-alist '("\\.hdl\\'" . nand2tetris-mode))
+     #+END_SRC
+** Open
+
+   - Universal open command.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-open-at-point ()
+         (interactive)
+         (condition-case nil (org-open-at-point-global)
+           (user-error (helm-find-files nil))))
+
+       (global-set-key (kbd "C-c o") #'*-open-at-point)
+     #+END_SRC
+
+** Org
+
+   - Use [[http://orgmode.org/manual/Activation.html#Activation][Org-suggested]] keybindings for global Org commands.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-c a") #'org-agenda)
+      (global-set-key (kbd "C-c b") #'org-iswitchb)
+      (global-set-key (kbd "C-c c") #'org-capture)
+      (global-set-key (kbd "C-c l") #'org-store-link)
+      (global-set-key (kbd "C-c L") #'org-insert-link-global)
+    #+END_SRC
+
+   - Use Helm to jump to headlines.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'org
+         (customize-set-variable 'helm-org-headings-fontify t)
+         (define-key org-mode-map (kbd "M-i") #'helm-org-in-buffer-headings)
+         (define-key org-mode-map (kbd "C-M-i") #'helm-org-parent-headings))
+     #+END_SRC
+
+   - Move across headlines more easily.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'org
+         (define-key org-mode-map (kbd "M-p") #'outline-previous-visible-heading)
+         (define-key org-mode-map (kbd "M-n") #'outline-next-visible-heading)
+         (define-key org-mode-map (kbd "M-P") #'org-backward-heading-same-level)
+         (define-key org-mode-map (kbd "M-N") #'org-forward-heading-same-level)
+         (define-key org-mode-map (kbd "M-U") #'outline-up-heading))
+     #+END_SRC
+
+   - Automatically adjust footnotes after insert or delete. Simple =fn:N=
+      will be renumbered, and all footnotes will be sorted.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'org-footnote-auto-adjust t)
+     #+END_SRC
+
+   - Set Org babel languages.
+
+     #+BEGIN_SRC emacs-lisp
+       (org-babel-do-load-languages 'org-babel-load-languages
+                                    '((clojure . t)
+                                      (emacs-lisp . t)
+                                      (lisp . t)
+                                      (scheme . t)))
+     #+END_SRC
+
+   - Set Org export backends. This determines what options are available when
+     the export framework is used.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'org-export-backends '(ascii html icalendar latex md))
+     #+END_SRC
+
+   - Replace ellipsis with less annoying symbol.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'org-ellipsis "↴")
+     #+END_SRC
+
+   - Use [[https://github.com/snosov1/toc-org][toc-org]] to automatically generate a table of contents for Org
+     files. Useful mainly for GitHub.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-org-insert-toc ()
+         "Create table of contents (TOC) if current buffer is in
+       `org-mode'."
+         (when (eq major-mode 'org-mode)
+           (toc-org-insert-toc)))
+
+       (when (require 'toc-org nil t)
+         (add-hook 'org-mode-hook #'toc-org-enable)
+         (add-hook 'before-save-hook #'*-org-insert-toc))
+     #+END_SRC
+
+** Pages
+   - Use [[https://github.com/purcell/page-break-lines][page-break-lines]] to convert form feed characters into
+     horizontal rules.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-page-break-lines-mode)
+     #+END_SRC
+
+   - Use [[https://github.com/david-christiansen/helm-pages][helm-pages]] to navigate pages.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "M-p") #'helm-pages)
+     #+END_SRC
+** PDF Tools
+   - Use [[https://github.com/politza/pdf-tools][pdf-tools]], a support library for PDF files that features fast
+     rendering, etc. *Need to install external dependencies
+     first*. Linux-only.
+
+     #+BEGIN_SRC emacs-lisp
+       (if (string= system-type "gnu/linux")
+           (pdf-tools-install))
+     #+END_SRC
+** Performance
+   - Increase garbage collection (GC) threshold to reduce frequency.
+
+     Taken from [[https://github.com/bbatsov][Bozhidar Batsov]]'s [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L45][config file]].
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Reduce the frequency of garbage collection by making it happen on each 50MB
+       ;; of allocated data (the default is on every 0.76MB)
+       (customize-set-variable 'gc-cons-threshold 50000000)
+
+     #+END_SRC
+** Popwin
+   - Use [[https://github.com/m2ym/popwin-el][popwin]], a popup window manager for Emacs which makes you free from
+     annoying buffers such like =*Help*=, =*Completions*=, =*compilation*=,
+     etc.
+
+      #+BEGIN_SRC emacs-lisp
+        (require 'popwin)
+        (popwin-mode t)
+
+        ;; Set popup window height to 1/2 of frame height
+        (customize-set-variable 'popwin:popup-window-height 0.5)
+      #+END_SRC
+
+** Prettify Symbols
+   - Prettify symbols for all programming modes.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-prettify-symbols-mode t)
+
+       (defvar *-prettify-symbols-alist
+         '(("lambda" . ?λ)
+           ("not" . ?¬)
+           ("not=" . ?≠)
+           ("/=" . ?≠)
+           ("!=" . ?≠)))
+
+       (add-hook 'prog-mode-hook (lambda nil
+                                   (dolist (pair *-prettify-symbols-alist)
+                                     (push pair prettify-symbols-alist))))
+     #+END_SRC
+** Projectile
+   - Use [[https://github.com/bbatsov/projectile][projectile]], a project interaction library, with =helm-projectile=.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (projectile-global-mode t)
+
+       ;; Use helm-projectile
+       (customize-set-variable 'projectile-completion-system 'helm)
+       (helm-projectile-on)
+
+       ;; Truncate long lines with helm
+       ;; Only seems to affect helm-projectile
+       (customize-set-variable 'helm-truncate-lines t)
+     #+END_SRC
+
+** Quit
+   - Unbind =C-z=, =C-x C-z=, which by default are bound to
+     ~suspend-frame~. No need to waste a precious =C-= key on this.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (global-unset-key (kbd "C-z"))
+       (global-unset-key (kbd "C-x C-z"))
+     #+END_SRC
+
+   - Unbind =C-x C-c=, which is ~save-buffers-kill-terminal~. Why would we ever
+     want to quit Emacs?
+
+     #+BEGIN_SRC emacs-lisp
+       (global-unset-key (kbd "C-x C-c"))
+     #+END_SRC
+
+** Sass
+   - Define a function to clean up a Sass file using the =sass-convert= tool.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-cleanup-sass ()
+         "Clean up Sass file"
+         (interactive)
+         (shell-command
+          (format "/usr/local/bin/sass-convert %s %s"
+                  (shell-quote-argument (buffer-file-name))
+                  (shell-quote-argument (buffer-file-name))))
+         (revert-buffer t t t))
+     #+END_SRC
+** Scheme
+   - Specify Scheme program name.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq scheme-program-name "guile")
+     #+END_SRC
+
+   - Function to run inferior Scheme process in other window.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun run-scheme-other-window ()
+         "Run Scheme inferior process in other window"
+         (interactive)
+         (other-window 1)
+         (run-scheme scheme-program-name))
+     #+END_SRC
+
+   - Run Inferior Scheme in other window immediately after entering =scheme-mode=.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'scheme-mode-hook (lambda () (save-selected-window
+                                                (run-scheme-other-window))))
+
+       ;; Replace switch-to-scheme with run-scheme-other-window
+       (with-eval-after-load 'scheme
+         (define-key scheme-mode-map (kbd "C-c C-z") #'run-scheme-other-window))
+     #+END_SRC
+
+** Scratch Buffer
+   - Inhibit scratch buffer text.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'initial-scratch-message "")
+     #+END_SRC
+
+** Scrollbar
+   - Disable the scrollbar.
+
+     #+BEGIN_SRC emacs-lisp
+       (scroll-bar-mode 0)
+     #+END_SRC
+
+** Search and Replace
+   - Prefer regexp versions of search and replace functions.
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Search
+       (global-set-key (kbd "C-s") #'isearch-forward-regexp)
+       (global-set-key (kbd "C-r") #'isearch-backward-regexp)
+
+       ;; Replace
+       (global-set-key (kbd "M-%") #'query-replace-regexp)
+     #+END_SRC
+
+** Sexp
+   - Bind =C-M-2= to ~mark-sexp~, because =C-M-@= can be hard to reach on certain keyboards.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-M-2") #'mark-sexp)
+     #+END_SRC
+
+   - Bind ~insert-parentheses~ and ~move-past-close-and-indent~ to more convenient
+     keys.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       ;; Without an argument, `insert-parentheses' inserts a pair of parentheses at
+       ;; point. We don't need that since we use `smartparens', so make wrapping next
+       ;; sexp the default behavior.
+
+       (defun *-insert-parentheses (&optional arg)
+         "Wrap next ARG sexps in parentheses.
+
+       If there is no next sexp, insert a new pair of parentheses."
+         (interactive "p")
+         (let ((arg (or arg 1))
+               (exists-next-sexp t))
+           (save-excursion
+             (condition-case nil
+                 (forward-sexp)
+               (scan-error (setq exists-next-sexp nil))))
+           (if exists-next-sexp
+               (insert-parentheses arg)
+             (insert-parentheses))))
+
+       (defun *-move-past-close-and-reindent ()
+         "Like `move-past-close-and-reindent', but insert a pair of
+       parentheses."
+         (interactive)
+         (move-past-close-and-reindent)
+         (insert-parentheses))
+
+       (global-set-key (kbd "C-M-9") #'*-insert-parentheses)
+       (global-set-key (kbd "C-M-0") #'*-move-past-close-and-reindent)
+     #+END_SRC
+
+** SGML
+   - Use =emmet-mode= for all markup.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'sgml-mode-hook #'emmet-mode)
+     #+END_SRC
+
+   - View markup buffer in browser.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'sgml-mode
+         (define-key sgml-mode-map (kbd "C-c w u") #'browse-url-of-buffer))
+     #+END_SRC
+
+   - Use =web-beautify=.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'sgml-mode
+         (add-hook 'sgml-mode-hook
+                    (lambda ()
+                      (add-hook 'before-save-hook
+                                #'web-beautify-html-buffer t t))))
+
+       (with-eval-after-load 'sgml-mode
+         (define-key sgml-mode-map (kbd "C-c w b") #'web-beautify-html))
+     #+END_SRC
+
+** Shell
+   - In =shell-mode=, use =helm-comint-input-ring= for
+     =comint-dynamic-list-input-ring=, which lists the input history.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key comint-mode-map
+         [remap comint-dynamic-list-input-ring] #'helm-comint-input-ring)
+     #+END_SRC
+
+** Smartparens
+
+   - Use [[https://github.com/Fuco1/smartparens][smartparens]], a minor mode for Emacs that deals with parens pairs and
+     tries to be smart about it.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'smartparens-config)
+
+       ;; Use smartparens
+       (smartparens-global-mode t)
+
+       ;; Use show-smartparens, which highlights matched pairs
+       (show-smartparens-global-mode)
+
+       ;; Use smartparens-strict-mode for certain modes
+       (mapc (lambda (hook)
+                 (add-hook hook #'smartparens-strict-mode))
+               '(markdown-mode-hook
+                 prog-mode-hook
+                 scss-mode-hook))
+     #+END_SRC
+
+   - Keybinding for =smartparens=, taken from the [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][author's config file]].
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Foward/backward
+       (defun *-forward-sexp ()
+         "Move forward sexp, depending on major mode."
+         (interactive)
+         (pcase major-mode
+           (`clojure-mode (clojure-forward-logical-sexp))
+           (_ (sp-forward-sexp))))
+
+       (defun *-backward-sexp ()
+         "Move backward sexp, depending on major mode."
+         (interactive)
+         (pcase major-mode
+           (`clojure-mode (clojure-backward-logical-sexp))
+           (_ (sp-backward-sexp))))
+
+       (define-key smartparens-mode-map (kbd "C-M-f") #'*-forward-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-b") #'*-backward-sexp)
+
+       ;; Up/down
+       (define-key smartparens-mode-map (kbd "C-M-d") #'sp-down-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-e") #'sp-up-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-a") #'sp-backward-down-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-q") #'sp-backward-up-sexp)
+
+       ;; Transpose
+       (define-key smartparens-mode-map (kbd "C-M-t") 'sp-transpose-sexp)
+
+       ;; Kill/copy
+       (define-key smartparens-mode-map (kbd "C-M-k") #'sp-kill-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-w") #'sp-copy-sexp)
+
+       ;; Unwrap
+       (define-key smartparens-mode-map (kbd "M-<delete>") #'sp-unwrap-sexp)
+       (define-key smartparens-mode-map (kbd "M-<backspace>") #'sp-backward-unwrap-sexp)
+
+       ;; Slurp/barf
+       (define-key smartparens-mode-map (kbd "C-<right>") #'sp-forward-slurp-sexp)
+       (define-key smartparens-mode-map (kbd "C-<left>") #'sp-forward-barf-sexp)
+       (define-key smartparens-mode-map (kbd "C-S-<left>") #'sp-backward-slurp-sexp)
+       (define-key smartparens-mode-map (kbd "C-S-<right>") #'sp-backward-barf-sexp)
+
+       (define-key smartparens-mode-map (kbd "C-M-<backspace>") #'sp-splice-sexp-killing-backward)
+       (define-key smartparens-mode-map (kbd "C-S-<backspace>") #'sp-splice-sexp-killing-around)
+
+       (define-key smartparens-mode-map (kbd "C-]") #'sp-select-next-thing-exchange)
+       (define-key smartparens-mode-map (kbd "C-<left_bracket>") #'sp-select-previous-thing)
+       (define-key smartparens-mode-map (kbd "C-M-]") #'sp-select-next-thing)
+
+       ;; Indent
+       (define-key smartparens-mode-map (kbd "C-M-<tab>") #'sp-indent-defun)
+     #+END_SRC
+
+** Spelling
+   - Use =flyspell= with =text-mode= and its derivatives, and ~flyspell-prog-mode~ with programming modes.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-flyspell-mode-setup ()
+         "Hook function for `flyspell-mode'."
+         (customize-set-variable 'flyspell-auto-correct-binding (kbd "C-;"))
+         (flyspell-mode)
+         (with-eval-after-load 'flyspell
+           (define-key flyspell-mode-map (kbd "C-M-i") nil)))
+
+       (defun *-flyspell-prog-mode-setup ()
+         "Hook function for `flyspell-prog-mode'."
+         (customize-set-variable 'flyspell-auto-correct-binding (kbd "C-'"))
+         (flyspell-prog-mode)
+         (with-eval-after-load 'flyspell
+           (define-key flyspell-mode-map (kbd "C-M-i") nil)))
+
+       (add-hook 'text-mode-hook #'*-flyspell-mode-setup)
+       (add-hook 'prog-mode-hook #'*-flyspell-prog-mode-setup)
+     #+END_SRC
+
+** Splash Screen
+  - Inhibit the splash screen.
+
+    #+BEGIN_SRC emacs-lisp
+      (customize-set-variable 'inhibit-splash-screen t)
+    #+END_SRC
+
+** Terminal Mode
+   - Do not use =yasnippet= in =term-mode=.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'term-mode-hook (lambda ()
+                                   (yas-minor-mode -1)))
+     #+END_SRC
+
+** Theme
+   - Use theme.
+
+    #+BEGIN_SRC emacs-lisp
+      (load-theme 'zenburn t)
+    #+END_SRC
+
+   - Eliminate ~vertical-border~ by giving it the same color as ~default~ face.
+
+     #+BEGIN_SRC emacs-lisp
+       (set-face-foreground 'vertical-border (face-background 'default))
+     #+END_SRC
+
+** Toggle
+   - Keys for toggling modes. Inspired by [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][article]] from [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][Endless Parentheses]].
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Toggle common modes
+       (defhydra hydra-toggle (:color amaranth)
+         "
+       Appearance                                                         [_q_] quit
+       ^^---------------------------------------------------------------------------
+       [_r_] rainbow-mode:               %s(if (boundp 'rainbow-mode) rainbow-mode 'nil)
+       [_w_] whitespace-mode:            %s(if (boundp 'whitespace-mode) whitespace-mode 'nil)
+
+       Debug
+       ^^---------------------------------------------------------------------------
+       [_d_] debug-on-error:             %`debug-on-error
+
+       Editing
+       ^---------------------------------------------------------------------------
+       [_%_] read-only-mode:             %`buffer-read-only
+       [_f_] auto-fill-mode:             %`auto-fill-function
+       [_s_] smartparens-mode:           %`smartparens-mode
+       [_S_] smartparens-strict-mode:    %`smartparens-strict-mode
+       [_t_] toggle-truncate-lines:      %`truncate-lines
+       [_v_] visual-line-mode:           %`visual-line-mode
+
+       Expansion
+       ^^---------------------------------------------------------------------------
+       [_y_] yas-global-mode:            %`yas-global-mode
+
+       Spelling and Syntax
+       ^^---------------------------------------------------------------------------
+       [_c_] flycheck-mode:              %s(if (boundp 'flycheck-mode) flycheck-mode 'nil)
+       [_p_] flyspell-mode:              %s(if (boundp 'flyspell-mode) flyspell-mode 'nil)
+       [_P_] flyspell-prog-mode:         %s(if (boundp 'flyspell-prog-mode) flyspell-prog-mode 'nil)
+       "
+         ("%" read-only-mode nil)
+         ("c" flycheck-mode nil)
+         ("d" toggle-debug-on-error nil)
+         ("f" auto-fill-mode nil)
+         ("p" flyspell-mode nil)
+         ("P" flyspell-prog-mode nil)
+         ("r" rainbow-mode nil)
+         ("s" smartparens-mode nil)
+         ("S" smartparens-strict-mode nil)
+         ("t" toggle-truncate-lines nil)
+         ("v" visual-line-mode nil)
+         ("w" whitespace-mode nil)
+         ("q" nil nil :color blue)
+         ("y" yas-global-mode nil))
+
+       (define-key ctl-x-map "t" #'hydra-toggle/body)
+     #+END_SRC
+** Whitespace Cleanup
+   - Use spaces, not tabs, by default.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'indent-tabs-mode nil)
+     #+END_SRC
+
+   - Clean up whitespace in the buffer before saving.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'before-save-hook #'whitespace-cleanup)
+     #+END_SRC
+
+** Window Management
+   - Split the frame into two windows, left and right, if the frame is
+     maximized or fullscreen.
+
+     For some reason, simply adding our function to
+     =after-make-frame-functions= does not work for the intial frame. It does
+     work when using =emacsclient=, because the Emacs daemon always creates an
+     invisible frame. We therefore make an explicit call to the function to
+     make sure it gets called.
+
+     See [[http://emacsninja.com/posts/who-framed-emacs.html#id4][this article]] from EmacsNinja for more information.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-split-window (&optional frame)
+         "Split the current frame into two windows horizontally."
+         (with-selected-frame (or frame
+                                  (selected-frame))
+           (split-window-horizontally)
+           (other-window 1)))
+
+       ;; Add function to after-make-frame-functions, which works only when using
+       ;; emacsclient
+       (add-hook 'after-make-frame-functions #'*-split-window)
+
+       ;; Call function to split window explicitly if not using emacsclient
+       (if (not (daemonp))
+           (*-split-window))
+     #+END_SRC
+
+   - Function to rotate buffers between windows in the current frame. When
+     there are two windows (which is most of the time), swap the buffers in
+     the windows. The cursor remains in the same buffer.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-rotate-buffers-in-windows (&optional arg)
+         "Rotate buffers displayed in windows by ARG windows.
+
+       If ARG is positive, rotate ARG windows clockwise. If ARG is negative,
+       rotate -ARG windows counterclockwise. Nil defaults to 1 window.
+       Raw prefix argumnt \\[universal-argument] defaults to -1.
+
+       By 'clockwise', we mean that if windows W1, W2, W3 are displaying
+       buffers B1, B2, and B3 respectively, then the result of calling
+       this function without an argument is that W1 <- B3, W2 <- B1, W3
+       <- B2."
+         (interactive "P")
+         (require 'dash)
+         (unless (minibufferp)
+           (let* ((windows (window-list))
+                  (numrot (cond ((consp arg) -1)
+                                (t (mod (prefix-numeric-value arg)
+                                        (length windows))))))
+             (cl-mapcar (lambda (window buffer)
+                          (set-window-buffer window buffer))
+                        windows
+                        (mapcar #'window-buffer
+                                (-rotate numrot windows)))
+             (select-window (nth numrot windows)))))
+     #+END_SRC
+
+   - Hydra for working with windows.
+
+     #+BEGIN_SRC emacs-lisp
+       (defhydra hydra-window (:color pink)
+         "
+       Windows                                                             [_q_] quit
+       ^------------------------------------------------------------------------------
+       [_-_]/[_=_] vertical shrink / enlarge
+       [_[_]/[_]_] horizontal shrink / enlarge
+       [_b_]       balance
+       [_o_]/[_O_] point to other window / reverse
+       [_r_]/[_R_] rotate buffers / counterclockwise
+       [_v_]/[_V_] vertical split / delete
+       "
+       ("[" (shrink-window-horizontally 5) nil)
+       ("]" (enlarge-window-horizontally 5) nil)
+       ("-" (shrink-window 3) nil)
+       ("=" (enlarge-window 3) nil)
+       ("b" balance-windows nil)
+       ("o" (other-window 1) nil)
+       ("O" (other-window -1) nil)
+       ("r" *-rotate-buffers-in-windows nil)
+       ("R" (*-rotate-buffers-in-windows -1) nil)
+       ("v" split-window-vertically nil)
+       ("V" delete-other-windows-vertically nil)
+       ("q" nil nil))
+
+       (define-key ctl-x-map "w" #'hydra-window/body)
+     #+END_SRC
+** YASnippet
+   - Use [[https://github.com/capitaomorte/yasnippet][yasnippet]], a template system.
+
+      #+BEGIN_SRC emacs-lisp
+        (yas-global-mode t)
+      #+END_SRC
+
+   - Use =whitespace-mode= when writting snippets for YASnippet.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'snippet-mode-hook #'whitespace-mode)
+     #+END_SRC
+
+* Microsoft Windows
+  Microsoft Windows specific configurations. These should only apply when
+  Emacs is being used on a Windows system.
+
+** Keybindings
+   - The =<menu>= key on Linux is referred to as the =<apps>= key on Windows.
+     We bind =helm-M-x= to this key.
+
+     #+BEGIN_SRC emacs-lisp
+       (if (string= system-type "windows-nt")
+           (global-set-key (kbd "<apps>") #'helm-M-x))
+     #+END_SRC
+
+* Mac OSX
+** Keybindings
+   - Use =Command= keys as =Meta= instead of =Super=.
+
+     #+BEGIN_SRC emacs-lisp
+       (when (string= system-type "darwin")
+         (setq mac-command-modifier 'meta)
+         (setq mac-option-modifier nil))
+     #+END_SRC
+
+* License
+
+  My Emacs configurations written in Org mode.
+
+  Copyright (c) 2014-2016 Tianxiang Xiong
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.

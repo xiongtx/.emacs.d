@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: dropdown-header
+# key: bs:ddheader
+# binding: direct-keybinding
+# --
+ <li class="dropdown-header">${1:header}</li>

@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: cust
+# key: cust
+# binding: direct-keybinding
+# --
+(define ${1:cust} (make-custodian))
+(parameterize ([current-custodian $1])
+  $0)

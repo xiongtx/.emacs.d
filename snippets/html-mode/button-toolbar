@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: button-toolbar
+# key: bs:buttont
+# binding: direct-keybinding
+# --
+<div class="btn-toolbar" role="toolbar" aria-label="${1:btn-toolbar-label}">
+  <div class="btn-group" role="group" aria-label="${2:btn-group-1-label}">
+    $0
+  </div>
+  <div class="btn-group" role="group" aria-label="${3:btn-group-2-label}">
+
+  </div>
+</div>
