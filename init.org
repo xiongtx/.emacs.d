@@ -844,15 +844,10 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        (defun *-eshell-other-window-buffer-file-directory ()
-         "Return other window's buffer's file directory, if it exists. NIL
-       otherwise.
-
-       If the other window's buffer is a Dired buffer, switch to its
-       directory."
+         "Return other window's buffer's `default-directory', if it
+       exists. NIL otherwise."
          (with-current-buffer (window-buffer (next-window nil 'no-minibuffer))
-           (let ((file (buffer-file-name)))
-             (cond (file (file-name-directory file))
-                   ((eq major-mode 'dired-mode) dired-directory)))))
+           default-directory))
      #+END_SRC
 
 ** Expand Region
