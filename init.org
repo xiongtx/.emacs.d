@@ -172,7 +172,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              company
                              company-auctex
                              company-quickhelp
-                             company-tern
                              discover-my-major
                              dockerfile-mode
                              edit-server
@@ -209,7 +208,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              slime
                              slime-company
                              smartparens
-                             tern
                              toc-org
                              use-package
                              yaml-mode
@@ -1119,17 +1117,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (with-eval-after-load 'js2-mode
          (define-key js2-mode-map (kbd "C-c d") #'js-doc-insert-function-doc)
          (define-key js2-mode-map (kbd "@") #'js-doc-insert-tag))
-     #+END_SRC
-
-   - Use =tern= with =company=.
-
-     #+BEGIN_SRC emacs-lisp
-       ;; Use tern with js2-mode
-       (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-
-       ;; Use company-mode with tern
-       (with-eval-after-load 'company
-         (add-to-list 'company-backends 'company-tern))
      #+END_SRC
 
    - Use =web-beautify=.
