@@ -1181,6 +1181,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c m") #'magit-status)
      #+END_SRC
+
+   - Bind ~magit-section-toggle~ to more convenient key.
+
+     #+BEGIN_SRC emacs-lisp
+       (dolist (map (list magit-status-mode-map magit-stash-mode-map))
+         (define-key map (kbd "SPC") #'magit-section-toggle))
+     #+END_SRC
 ** Markdown
    - Use [[http://pandoc.org/][pandoc]] as Markdown converter.
 
