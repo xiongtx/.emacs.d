@@ -58,6 +58,7 @@
    - [[#modes][Modes]]
    - [[#multiple-cursors][Multiple Cursors]]
    - [[#nand2tetris][Nand2Tetris]]
+   - [[#octave][Octave]]
    - [[#open][Open]]
    - [[#org][Org]]
    - [[#pages][Pages]]
@@ -1344,6 +1345,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (customize-set-value 'nand2tetris-core-base-dir "~/Dropbox/coursera/build-a-computer/nand2tetris")
 
        (add-to-list 'auto-mode-alist '("\\.hdl\\'" . nand2tetris-mode))
+     #+END_SRC
+
+** Octave
+
+   - Open files in ~octave-mode~.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
      #+END_SRC
 ** Open
 
