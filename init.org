@@ -1186,8 +1186,9 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Bind ~magit-section-toggle~ to more convenient key.
 
      #+BEGIN_SRC emacs-lisp
-       (dolist (map (list magit-status-mode-map magit-stash-mode-map))
-         (define-key map (kbd "SPC") #'magit-section-toggle))
+       (with-eval-after-load 'magit
+         (dolist (map (list magit-status-mode-map magit-stash-mode-map))
+           (define-key map (kbd "SPC") #'magit-section-toggle)))
      #+END_SRC
 ** Markdown
    - Use [[http://pandoc.org/][pandoc]] as Markdown converter.
