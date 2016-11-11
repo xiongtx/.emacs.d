@@ -1177,7 +1177,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** Magit
-   - Bind the =magit-status= command, which serves as Magit's entry point.
+   - Bind the ~magit-status~ command, which is Magit's entry point.
 
      #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c m") #'magit-status)
