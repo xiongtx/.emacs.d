@@ -982,10 +982,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (define-key (current-global-map) [remap eval-expression]
          #'helm-eval-expression-with-eldoc)
 
-       ;; Tags
-       (global-set-key [remap find-tag] #'helm-etags-select)
-       (global-set-key [remap xref-find-definitions] #'helm-etags-select)
-
        ;; Processes
        (define-key help-map "t" #'helm-top)
      #+END_SRC
