@@ -1351,6 +1351,42 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
      #+END_SRC
+
+   - Change keybindings.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'octave-mode
+         (define-key octave-mode-map (kbd "C-h a") nil)
+         (define-key inferior-octave-mode-map (kbd "C-h a") nil)
+         (define-key inferior-octave-mode-map [remap inferior-octave-dynamic-list-input-ring] #'helm-comint-input-ring))
+     #+END_SRC
+
+   - Look up Octave documentation in a pop-up.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-octave-help (f)
+         "Return docs of function F as string."
+         (inferior-octave-send-list-and-digest (list (format "help ('%s');\n" f)))
+         (mapconcat #'identity inferior-octave-output-list "\n"))
+
+       (defun *-octave-doc-popup (f)
+         "Display documentation of an Octave function in a pop-up
+       window."
+         (interactive (list (symbol-at-point)))
+         (let ((x-gtk-use-system-tooltips nil))
+           (pos-tip-show (*-octave-help f) 'tooltip nil nil -1 nil nil nil 0)))
+
+       (defun *-octave-doc-popup-on ()
+         "Turn `*-octave-doc-popup' by binding it to an appropriate
+       key."
+         (dolist (map (list octave-mode-map inferior-octave-mode-map))
+           (define-key map (kbd "C-h j") #'*-octave-doc-popup)
+           (define-key map (kbd "C-h C-j") #'*-octave-doc-popup)))
+
+       (add-hook 'octave-mode-hook #'*-octave-doc-popup-on)
+       (add-hook 'inferior-octave-mode-hook #'*-octave-doc-popup-on)
+     #+END_SRC
+
 ** Open
 
    - Universal open command.
