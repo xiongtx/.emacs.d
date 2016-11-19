@@ -18,6 +18,7 @@
  - [[#configurations][Configurations]]
    - [[#about-emacs][About Emacs]]
    - [[#about-me][About Me]]
+   - [[#aggressive-indent][Aggressive Indent]]
    - [[#blog][Blog]]
    - [[#buffer][Buffer]]
    - [[#clojure][Clojure]]
@@ -167,7 +168,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     enough to install dependencies automatically.
 
     #+BEGIN_SRC emacs-lisp
-      (setq *-package-list '(auctex
+      (setq *-package-list '(aggressive-indent
+                             auctex
                              cider
                              clojure-mode
                              company
@@ -332,6 +334,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (customize-set-variable 'user-full-name "Tianxiang Xiong")
        (customize-set-variable 'user-mail-address "tianxiang.xiong@gmail.com")
      #+END_SRC
+** Aggressive Indent
+   - Use [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent]] to keep source code aligned.
+
+     #+BEGIN_SRC emacs-lisp
+       (aggressive-indent-global-mode 1)
+     #+END_SRC
+
 ** Blog
    - Use ~org-publish~ to manage my [[http://xiongtx.github.io][GitHub blog]]. We need to set the
      ~org-publish-project-alist~ variable to publish projects.
