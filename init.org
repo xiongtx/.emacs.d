@@ -72,7 +72,7 @@
    - [[#sass][Sass]]
    - [[#scheme][Scheme]]
    - [[#scratch-buffer][Scratch Buffer]]
-   - [[#scrollbar][Scrollbar]]
+   - [[#scroll][Scroll]]
    - [[#search-and-replace][Search and Replace]]
    - [[#sexp][Sexp]]
    - [[#sgml][SGML]]
@@ -1628,11 +1628,17 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (customize-set-variable 'initial-scratch-message "")
      #+END_SRC
 
-** Scrollbar
+** Scroll
    - Disable the scrollbar.
 
      #+BEGIN_SRC emacs-lisp
        (scroll-bar-mode 0)
+     #+END_SRC
+
+   - Use convenient binding for ~scroll-other-window-down~.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-M-y") #'scroll-other-window-down)
      #+END_SRC
 
 ** Search and Replace
