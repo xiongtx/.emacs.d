@@ -830,18 +830,18 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Initializations for =eshell=.
 
      #+BEGIN_SRC emacs-lisp
-       (defun *-eshell-kill-input ()
-         "Kill current input at an `eshell' prompt."
+       (defun *-eshell-clear ()
+         "Clear `eshell' buffer, comint-style."
          (interactive)
-         (eshell-bol)
-         (kill-line))
+         (eshell/clear t)
+         (eshell-emit-prompt))
 
        (defun *-eshell-init ()
          "Init forms to run as part of `eshell-mode-hook'."
          (yas-minor-mode -1)
          (toggle-truncate-lines 1)
          (smartparens-mode t)
-         (define-key eshell-mode-map (kbd "C-k") #'*-eshell-kill-input)
+         (define-key eshell-mode-map (kbd "C-c M-o") #'*-eshell-clear)
          (define-key eshell-mode-map [remap eshell-list-history] #'helm-eshell-history)
          (define-key eshell-mode-map [remap eshell-pcomplete] #'company-manual-begin))
 
