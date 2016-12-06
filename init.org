@@ -1364,7 +1364,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Change keybindings.
 
      #+BEGIN_SRC emacs-lisp
-       (with-eval-after-load 'octave-mode
+       (with-eval-after-load 'octave
          (define-key octave-mode-map (kbd "C-h a") nil)
          (define-key inferior-octave-mode-map (kbd "C-h a") nil)
          (define-key inferior-octave-mode-map [remap inferior-octave-dynamic-list-input-ring] #'helm-comint-input-ring))
