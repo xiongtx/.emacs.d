@@ -200,7 +200,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              magit
                              markdown-mode
                              mediawiki
-                             multiple-cursors                             
+                             multiple-cursors
                              page-break-lines
                              popwin
                              projectile
@@ -1503,7 +1503,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        (if (string= system-type "gnu/linux")
-           (pdf-tools-install))
+           (pdf-tools-install t nil t))
      #+END_SRC
 ** Performance
    - Increase garbage collection (GC) threshold to reduce frequency.
