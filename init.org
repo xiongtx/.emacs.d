@@ -58,7 +58,6 @@
    - [[#mode-line][Mode Line]]
    - [[#modes][Modes]]
    - [[#multiple-cursors][Multiple Cursors]]
-   - [[#nand2tetris][Nand2Tetris]]
    - [[#octave][Octave]]
    - [[#open][Open]]
    - [[#org][Org]]
@@ -201,8 +200,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              magit
                              markdown-mode
                              mediawiki
-                             multiple-cursors
-                             nand2tetris
+                             multiple-cursors                             
                              page-break-lines
                              popwin
                              projectile
@@ -1350,15 +1348,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (define-key *-mc-map "\C-e" #'mc/edit-ends-of-lines)
      #+END_SRC
 
-** Nand2Tetris
-
-   - Configs for [[https://github.com/CestDiego/nand2tetris.el/][nand2tetris.el]] for the [[https://www.coursera.org/learn/build-a-computer/][Build a Modern Computer from First Principles]] course.
-
-     #+BEGIN_SRC emacs-lisp
-       (customize-set-value 'nand2tetris-core-base-dir "~/Dropbox/coursera/build-a-computer/nand2tetris")
-
-       (add-to-list 'auto-mode-alist '("\\.hdl\\'" . nand2tetris-mode))
-     #+END_SRC
 
 ** Octave
 
