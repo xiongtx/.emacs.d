@@ -771,11 +771,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        `popwin-mode' is thus always nil, even when the mode is active.'"
          (let* ((sym (make-symbol " sym "))
                 (form `(let ((,sym ,symbol))
-                         (with-temp-buffer
-                           (let ((help-xref-following t))
-                             (help-mode)
-                             (help-xref-interned ,sym)
-                             (buffer-string))))))
+                         (save-window-excursion
+                           (with-temp-buffer
+                             (let ((help-xref-following t))
+                               (help-mode)
+                               (help-xref-interned ,sym)
+                               (buffer-string)))))))
            (if (fboundp #'popwin-mode)
                `(let ((old-popwin popwin-mode))
                   (popwin-mode -1)
