@@ -417,6 +417,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (add-hook 'clojure-mode-hook #'cider-mode))
      #+END_SRC
 
+   - Bind keys for browsing Clojure namespaces.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'cider-doc
+         (define-key cider-doc-map (kbd "n") #'cider-browse-ns-all)
+         (define-key cider-doc-map (kbd "C-n") #'cider-browse-ns-all))
+     #+END_SRC
+
    - Use [[https://github.com/clojure-emacs/helm-cider][helm-cider]].
 
      #+BEGIN_SRC emacs-lisp
