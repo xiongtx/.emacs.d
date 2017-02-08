@@ -415,6 +415,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (with-eval-after-load 'clojure-mode
          (add-hook 'clojure-mode-hook #'cider-mode))
+
+       (customize-set-variable 'cider-repl-display-help-banner nil)
      #+END_SRC
 
    - Bind keys for browsing Clojure namespaces.
