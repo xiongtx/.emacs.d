@@ -348,18 +348,18 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (customize-set-variable
         'org-publish-project-alist
         '(("blog posts"
-           :base-directory "~/Dropbox/github/xiongtx.github.io/_org/"
+           :base-directory "~/github/xiongtx.github.io/_org/"
            :base-extension "org"
            :body-only t
            :html-extension "html"
-           :publishing-directory "~/Dropbox/github/xiongtx.github.io/"
+           :publishing-directory "~/github/xiongtx.github.io/"
            :publishing-function org-html-publish-to-html
            :recursive t)
 
           ("blog static"
-           :base-directory "~/Dropbox/github/xiongtx.github.io/_org/"
+           :base-directory "~/github/xiongtx.github.io/_org/"
            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-           :publishing-directory "~/Dropbox/github/xiongtx.github.io/"
+           :publishing-directory "~/github/xiongtx.github.io/"
            :publishing-function org-publish-attachment
            :recursive t)
 
