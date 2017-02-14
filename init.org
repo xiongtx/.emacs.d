@@ -741,6 +741,18 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                ("stackoverflow\\.com" . markdown-mode)))
      #+END_SRC
 ** Elisp
+   - Use pretty symbols.
+
+     #+BEGIN_SRC emacs-lisp
+       (defvar *-prettify-symbols-elisp-alist
+         '(("thread-first" . (?- (Br . Bl) ?>))
+           ("thread-last" . (?- (Br . Bl) ?> (Br . Bl) ?>))))
+
+       (add-hook 'emacs-lisp-mode-hook (lambda ()
+                                         (dolist (pair *-prettify-symbols-elisp-alist)
+                                           (push pair prettify-symbols-alist))))
+
+     #+END_SRC
    - Use [[https://github.com/xiongtx/eros][eros]], which displays evaluation result overlays.
 
      #+BEGIN_SRC emacs-lisp
