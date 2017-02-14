@@ -473,15 +473,15 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Comment or uncomment a region or line in a "do what I mean" fashion.
 
      #+BEGIN_SRC emacs-lisp
-       (defun comment-or-uncomment-region-or-line ()
-           "Comments or uncomments the region or the current line if there's no active region."
-           (interactive)
-           (let (beg end)
-               (if (region-active-p)
-                   (setq beg (region-beginning) end (region-end))
-                   (setq beg (line-beginning-position) end (line-end-position)))
-               (comment-or-uncomment-region beg end)
-               (forward-line)))
+       (defun *-comment-or-uncomment-region-or-line ()
+         "Comments or uncomments the region or the current line if there's no active region."
+         (interactive)
+         (let (beg end)
+           (if (region-active-p)
+               (setq beg (region-beginning) end (region-end))
+             (setq beg (line-beginning-position) end (line-end-position)))
+           (comment-or-uncomment-region beg end)
+           (forward-line)))
      #+END_SRC
 
    - Set convenient key binding to comment/uncomment line.
@@ -1624,7 +1624,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Function to run inferior Scheme process in other window.
 
      #+BEGIN_SRC emacs-lisp
-       (defun run-scheme-other-window ()
+       (defun *-run-scheme-other-window ()
          "Run Scheme inferior process in other window"
          (interactive)
          (other-window 1)
