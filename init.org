@@ -795,7 +795,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                     (popwin-mode (or old-popwin -1))))
              ,form)))
 
-       
        ;;;; Key bindings
        (define-key help-map "j" #'*-describe-symbol-popup)
        (define-key help-map (kbd "C-j") #'*-describe-symbol-popup)
@@ -1551,9 +1550,11 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
            ("not" . ?¬)
            ("not=" . ?≠)
            ("/=" . ?≠)
-           ("!=" . ?≠)))
+           ("!=" . ?≠)
+           (">=" . ?≥)
+           ("<=" . ?≤)))
 
-       (add-hook 'prog-mode-hook (lambda nil
+       (add-hook 'prog-mode-hook (lambda ()
                                    (dolist (pair *-prettify-symbols-alist)
                                      (push pair prettify-symbols-alist))))
      #+END_SRC
