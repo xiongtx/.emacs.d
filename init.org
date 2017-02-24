@@ -1681,15 +1681,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (global-set-key (kbd "C-M-2") #'mark-sexp)
      #+END_SRC
 
-   - Bind ~insert-parentheses~ and ~move-past-close-and-indent~ to more convenient
-     keys.
+   - Use custom pair insertion commands.
 
      #+BEGIN_SRC emacs-lisp :tangle yes
        ;; Without an argument, `insert-parentheses' inserts a pair of parentheses at
        ;; point. We don't need that since we use `smartparens', so make wrapping next
        ;; sexp the default behavior.
 
-       (defun *-insert-parentheses (&optional arg)
+       (defun *-insert-pair (&optional arg open close)
          "Wrap next ARG sexps in parentheses.
 
        If there is no next sexp, insert a new pair of parentheses."
@@ -1701,9 +1700,30 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                  (forward-sexp)
                (scan-error (setq exists-next-sexp nil))))
            (if exists-next-sexp
-               (insert-parentheses arg)
-             (insert-parentheses))))
+               (insert-pair arg open close)
+             (insert-pair nil open close))))
 
+       (defun *-insert-parentheses (&optional arg)
+         (interactive "p")
+         (*-insert-pair arg ?\( ?\)))
+
+       (defun *-insert-brackets (&optional arg)
+         (interactive "p")
+         (*-insert-pair arg ?\[ ?\]))
+
+       (defun *-insert-braces (&optional arg)
+         (interactive "p")
+         (let ((parens-require-spaces nil))
+           (*-insert-pair arg ?\{ ?\})))
+
+       (global-set-key (kbd "C-M-9") #'*-insert-parentheses)
+       (global-set-key (kbd "M-ESC [") #'*-insert-brackets)
+       (global-set-key (kbd "C-M-{") #'*-insert-braces)
+     #+END_SRC
+
+   - Use custom ~move-past-close-and-reindent~
+
+     #+BEGIN_SRC emacs-lisp
        (defun *-move-past-close-and-reindent ()
          "Like `move-past-close-and-reindent', but insert a pair of
        parentheses."
@@ -1711,7 +1731,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (move-past-close-and-reindent)
          (insert-parentheses))
 
-       (global-set-key (kbd "C-M-9") #'*-insert-parentheses)
        (global-set-key (kbd "C-M-0") #'*-move-past-close-and-reindent)
      #+END_SRC
 
