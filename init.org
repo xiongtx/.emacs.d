@@ -1689,19 +1689,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ;; sexp the default behavior.
 
        (defun *-insert-pair (&optional arg open close)
-         "Wrap next ARG sexps in parentheses.
-
-       If there is no next sexp, insert a new pair of parentheses."
          (interactive "p")
-         (let ((arg (or arg 1))
-               (exists-next-sexp t))
-           (save-excursion
-             (condition-case nil
-                 (forward-sexp)
-               (scan-error (setq exists-next-sexp nil))))
-           (if exists-next-sexp
-               (insert-pair arg open close)
-             (insert-pair nil open close))))
+         (setq arg (or arg 1))
+         (save-excursion
+           (condition-case nil
+               (forward-sexp)
+             (scan-error (setq arg nil))))
+         (insert-pair arg open close))
 
        (defun *-insert-parentheses (&optional arg)
          (interactive "p")
