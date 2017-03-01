@@ -487,7 +487,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Set convenient key binding to comment/uncomment line.
 
      #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-;") #'comment-or-uncomment-region-or-line)
+       (global-set-key (kbd "C-;") #'*-comment-or-uncomment-region-or-line)
      #+END_SRC
 
 ** Common Lisp
