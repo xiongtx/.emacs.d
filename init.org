@@ -1879,6 +1879,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (set-face-foreground 'vertical-border (face-background 'default))
      #+END_SRC
 
+   - Use a better face for ~eldoc-highlight-function-argument~.
+
+     #+BEGIN_SRC emacs-lisp
+       (custom-set-faces '(eldoc-highlight-function-argument ((t (:inherit font-lock-variable-name-face)))))
+     #+END_SRC
+
 ** Toggle
    - Keys for toggling modes. Inspired by [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][article]] from [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][Endless Parentheses]].
 
