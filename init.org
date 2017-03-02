@@ -1623,11 +1623,11 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        (add-hook 'scheme-mode-hook (lambda () (save-selected-window
-                                                (run-scheme-other-window))))
+                                                (*-run-scheme-other-window))))
 
-       ;; Replace switch-to-scheme with run-scheme-other-window
+       ;; Replace switch-to-scheme with *-run-scheme-other-window
        (with-eval-after-load 'scheme
-         (define-key scheme-mode-map (kbd "C-c C-z") #'run-scheme-other-window))
+         (define-key scheme-mode-map (kbd "C-c C-z") #'*-run-scheme-other-window))
      #+END_SRC
 
 ** Scratch Buffer
