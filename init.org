@@ -394,6 +394,15 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** Clojure
+   - Recognize [[https://github.com/boot-clj/boot][boot]] files as Clojure.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'auto-mode-alist '("\\.boot\\'" . clojure-mode))
+
+       ;; Boot script files
+       (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
+     #+END_SRC
+
    - [[https://github.com/clojure-emacs/clojure-mode#indentation-options][Custom indent]] special forms and macros.
 
      #+BEGIN_SRC emacs-lisp
