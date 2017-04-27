@@ -169,6 +169,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (setq *-package-list '(aggressive-indent
                              auctex
+                             centered-window-mode
                              cider
                              clojure-mode
                              company
@@ -1960,6 +1961,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** Window Management
+   - Center window if the ~EMACS_CENTER_WINDOW~ environment variable is set.
+
+     #+BEGIN_SRC emacs-lisp
+       (when (getenv "EMACS_CENTER_WINDOW")
+         (customize-set-variable 'cwm-left-fringe-ratio 0)
+         (centered-window-mode))
+     #+END_SRC
+
    - Split the frame into two windows, left and right, if the frame is
      maximized or fullscreen.
 
