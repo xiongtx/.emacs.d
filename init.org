@@ -1820,7 +1820,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ;; Transpose
        (define-key smartparens-mode-map (kbd "C-M-t") 'sp-transpose-sexp)
 
-       ;; Kill/copy
+       ;; Mark/kill/copy
+       (global-set-key [remap mark-sexp] #'sp-mark-sexp)
        (define-key smartparens-mode-map (kbd "C-M-k") #'sp-kill-sexp)
        (define-key smartparens-mode-map (kbd "C-M-w") #'sp-copy-sexp)
 
