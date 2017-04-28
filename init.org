@@ -1213,6 +1213,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (global-set-key (kbd "C-c m") #'magit-status)
      #+END_SRC
 
+   - Don't ask to save repository buffers.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'magit-save-repository-buffers 'dontask)
+     #+END_SRC
+
    - Bind ~magit-section-toggle~ to more convenient key.
 
      #+BEGIN_SRC emacs-lisp
