@@ -427,6 +427,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (add-hook 'clojure-mode-hook #'cider-mode))
 
        (customize-set-variable 'cider-repl-display-help-banner nil)
+       (customize-set-variable 'cider-repl-use-pretty-printing t)
      #+END_SRC
 
    - Bind keys for browsing Clojure namespaces.
