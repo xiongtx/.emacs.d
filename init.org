@@ -677,8 +677,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Some functionality is turned off by default to avoid confusing new
      users. Turn them back on.
 
-
      #+BEGIN_SRC emacs-lisp :tangle yes
+       (put 'erase-buffer 'disabled nil)
        (put 'narrow-to-defun 'disabled nil)
        (put 'narrow-to-page 'disabled nil)
        (put 'narrow-to-region 'disabled nil)
