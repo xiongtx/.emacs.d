@@ -2051,7 +2051,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ^------------------------------------------------------------------------------
        [_-_]/[_=_] vertical shrink / enlarge
        [_[_]/[_]_] horizontal shrink / enlarge
-       [_b_]       balance
+       [_b_]     ^^balance
        [_o_]/[_O_] point to other window / reverse
        [_r_]/[_R_] rotate buffers / counterclockwise
        [_v_]/[_V_] vertical split / delete
