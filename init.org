@@ -925,6 +925,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (global-set-key (kbd "s--") #'iconify-or-deiconify-frame)
     #+END_SRC
+
+  - Resize pixel-wise. This is particularly useful on Mac.
+
+    #+BEGIN_SRC emacs-lisp
+      (customize-set-variable 'frame-resize-pixelwise t)
+    #+END_SRC
 ** Fringe
    - Hide fringes.
 
