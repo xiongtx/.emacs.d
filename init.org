@@ -1229,9 +1229,16 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Bind ~magit-section-toggle~ to more convenient key.
 
      #+BEGIN_SRC emacs-lisp
+       (defvar *-magit-spc-toggle-maps
+         '(magit-diff-mode-map
+           magit-revision-mode-map
+           magit-status-mode-map
+           magit-stash-mode-map)
+         "`magit'-related mode maps in which `SPC' should be bound to toggle.")
+
        (with-eval-after-load 'magit
-         (dolist (map (list magit-status-mode-map magit-stash-mode-map))
-           (define-key map (kbd "SPC") #'magit-section-toggle)))
+         (dolist (map *-magit-spc-toggle-maps)
+           (define-key (symbol-value map) (kbd "SPC") #'magit-section-toggle)))
      #+END_SRC
 ** Markdown
    - Use [[http://pandoc.org/][pandoc]] as Markdown converter.
