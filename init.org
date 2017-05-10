@@ -1985,8 +1985,9 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Center window if the ~EMACS_CENTER_WINDOW~ environment variable is set.
 
      #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'cwm-left-fringe-ratio 0)
+
        (when (getenv "EMACS_CENTER_WINDOW")
-         (customize-set-variable 'cwm-left-fringe-ratio 0)
          (centered-window-mode))
      #+END_SRC
 
