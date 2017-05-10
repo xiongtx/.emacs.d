@@ -937,6 +937,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp :tangle yes
        (fringe-mode 0)
      #+END_SRC
+
+   - Give ~fringe~ same color as ~default~ face.
+
+     This is useful for [[https://github.com/anler/centered-window-mode][centered-window-mode]].
+
+     #+BEGIN_SRC emacs-lisp
+       (set-face-background 'fringe (face-background 'default))
+     #+END_SRC
 ** Helm
    - Configure [[https://github.com/emacs-helm/helm][helm]], an incremental completion and selection narrowing
      framework. See the [[https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/.emacs.el][author's config file]] as a reference.
