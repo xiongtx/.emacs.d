@@ -31,6 +31,7 @@
    - [[#cursor][Cursor]]
    - [[#default-functionality][Default Functionality]]
    - [[#default-major-mode][Default Major Mode]]
+   - [[#dired][Dired]]
    - [[#discover-my-major][Discover My Major]]
    - [[#ediff][Ediff]]
    - [[#edit-server][Edit Server]]
@@ -689,6 +690,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (customize-set-variable 'initial-major-mode #'emacs-lisp-mode)
     #+END_SRC
+** Dired
+
+   - Omit uninteresting files; see ~dired-omit-files~.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'dired-mode-hook #'dired-omit-mode)
+     #+END_SRC
 
 ** Discover My Major
    - Use [[https://github.com/steckerhalter/discover-my-major][discover-my-major]], which displays key bindings and their meaning for
