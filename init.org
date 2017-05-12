@@ -835,41 +835,67 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** Eshell
-   - We want to visit or rename an =eshell= buffer.
 
-     This is modified from similar code from [[http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/][Enigma Curry]] involving =ansi-term=.
-
-     #+BEGIN_SRC emacs-lisp
-       (defun *-eshell-visit-other-window ()
-         "Visit or rename eshell buffer in the other window.
-       If the current buffer is:
-           1) an eshell buffer, rename it
-           2) not an eshell buffer, create an eshell buffer or switch to an
-              existing one (eshell handles this automatically) in the other
-              window."
-         (interactive)
-         (if (string= "eshell-mode" major-mode)
-             (call-interactively 'rename-buffer)
-           (progn
-             (other-window 1)
-             (eshell))))
-     #+END_SRC
-
-   - Convenient key binding to visit =eshell=.
+   - Remove banner.
 
      #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "M-$") '*-eshell-visit-other-window)
+       (customize-set-variable 'eshell-banner-message "")
      #+END_SRC
 
-   - Initializations for =eshell=.
+   - Function to switch Eshell directory to other window's buffer's default
+     directory.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-eshell-next-window-default-directory (&optional previous)
+         "Return next window's buffer's `default-directory', if it
+       exists.  Nil otherwise.
+
+       If optional argument PREVIOUS is non-nil, use previous instead of
+       next window."
+         (let ((window (if previous
+                           (previous-window nil 'no-minibuf)
+                         (next-window nil 'no-minibuf))))
+           (with-current-buffer (window-buffer window)
+             default-directory)))
+     #+END_SRC
+
+   - Clear Eshell buffer, preserving current input.
 
      #+BEGIN_SRC emacs-lisp
        (defun *-eshell-clear ()
          "Clear `eshell' buffer, comint-style."
          (interactive)
-         (eshell/clear t)
-         (eshell-emit-prompt))
+         (let ((input (eshell-get-old-input)))
+           (eshell/clear-scrollback)
+           (eshell-emit-prompt)
+           (insert input)))
+     #+END_SRC
 
+   - Start Eshell in other window, switching to useful directory.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-eshell-other-window ()
+         "Start Eshell in other window's buffer's `default-directory'.
+
+       If current buffer is in `eshell-mode', `cd' to previous window's
+       buffer's default directory."
+         (interactive)
+         (cl-flet ((switch-dir (dir)
+                               (cd dir)
+                               (*-eshell-clear)))
+           (if (eq 'eshell-mode major-mode)
+               (switch-dir (*-eshell-next-window-default-directory 'previous))
+             (let ((dir default-directory))
+               (other-window 1)
+               (eshell)
+               (switch-dir dir)))))
+
+       (global-set-key (kbd "M-$") #'*-eshell-other-window)
+     #+END_SRC
+
+   - Eshell initializations.
+
+     #+BEGIN_SRC emacs-lisp
        (defun *-eshell-init ()
          "Init forms to run as part of `eshell-mode-hook'."
          (yas-minor-mode -1)
@@ -880,17 +906,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (define-key eshell-mode-map [remap eshell-pcomplete] #'company-manual-begin))
 
        (add-hook 'eshell-mode-hook #'*-eshell-init)
-     #+END_SRC
-
-   - Function to easily switch Eshell directory to other window's buffer's
-     file directory.
-
-     #+BEGIN_SRC emacs-lisp
-       (defun *-eshell-other-window-buffer-file-directory ()
-         "Return other window's buffer's `default-directory', if it
-       exists. NIL otherwise."
-         (with-current-buffer (window-buffer (next-window nil 'no-minibuffer))
-           default-directory))
      #+END_SRC
 
 ** Expand Region
