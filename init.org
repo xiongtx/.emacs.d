@@ -142,8 +142,9 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
   - First, we list the package archives we'd like to install packages from.
 
     #+BEGIN_SRC emacs-lisp
-    (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                             ("melpa" . "http://melpa.milkbox.net/packages/")))
+      (customize-set-variable 'package-archives
+                              '(("gnu" . "http://elpa.gnu.org/packages/")
+                                ("melpa" . "http://melpa.milkbox.net/packages/")))
     #+END_SRC
 
   - If the variable =package-enable-at-startup= is non-nil, package
@@ -153,8 +154,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     we need to initialize our packages manually.
 
     #+BEGIN_SRC emacs-lisp
-    (setq package-enable-at-startup nil)
-    (package-initialize)
+      (customize-set-variable 'package-enable-at-startup nil)
+      (package-initialize)
     #+END_SRC
 
   - Make sure that we have the list of packages available.
@@ -386,7 +387,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      as =buffer|dir1/dir2=.
 
      #+BEGIN_SRC emacs-lisp
-       (setq uniquify-buffer-name-style 'post-forward)
+       (customize-set-variable 'uniquify-buffer-name-style 'post-forward)
      #+END_SRC
 
    - Revert buffer with =<f5>= (refresh).
@@ -712,13 +713,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        ;; Show control panel in single frame
-       (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+       (customize-set-variable 'ediff-window-setup-function 'ediff-setup-windows-plain)
 
        ;; Split windows horizontally
-       (setq ediff-split-window-function 'split-window-horizontally)
+       (customize-set-variable 'ediff-split-window-function 'split-window-horizontally)
 
        ;; Only highlight one diff
-       (setq-default ediff-highlight-all-diffs nil)
+       (customize-set-variable 'ediff-highlight-all-diffs nil)
      #+END_SRC
 
    - Useful diff commands.
@@ -745,19 +746,19 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        ;; Start edit-server
        (when (require 'edit-server nil t)
-         ; Edit in a new buffer instead of a new frame
-         (setq edit-server-new-frame nil)
+         ;; Edit in a new buffer instead of a new frame
+         (customize-set-variable 'edit-server-new-frame nil)
          (edit-server-start))
      #+END_SRC
 
    - Associated common websites with major modes.
 
      #+BEGIN_SRC emacs-lisp :tangle yes
-       (setq edit-server-url-major-mode-alist
-             '(("github\\.com" . markdown-mode)
-               ("reddit\\.com" . markdown-mode)
-               ("stackexchange\\.com" . markdown-mode)
-               ("stackoverflow\\.com" . markdown-mode)))
+       (customize-set-variable 'edit-server-url-major-mode-alist
+                               '(("github\\.com" . markdown-mode)
+                                 ("reddit\\.com" . markdown-mode)
+                                 ("stackexchange\\.com" . markdown-mode)
+                                 ("stackoverflow\\.com" . markdown-mode)))
      #+END_SRC
 ** Elisp
    - Use [[https://github.com/xiongtx/eros][eros]], which displays evaluation result overlays.
@@ -822,7 +823,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Move cursor between first pair of quotes after expansion.
 
      #+BEGIN_SRC emacs-lisp
-       (setq emmet-move-cursor-between-quotes t)
+       (customize-set-variable 'emmet-move-cursor-between-quotes t)
      #+END_SRC
 
    - Do not use certain keybindings.
@@ -932,7 +933,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     interface will have a column of white space on each side.
 
     #+BEGIN_SRC emacs-lisp
-      (setq-default fill-column 78)
+      (customize-set-variable 'fill-column 78)
     #+END_SRC
 
 ** Frame
@@ -1344,47 +1345,47 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (propertize " "
                      'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
 
-       (setq-default mode-line-format
-                     '("%e"
-                       mode-line-front-space
-                       mode-line-client
-                       mode-line-remote
-                       mode-line-mule-info
-                       mode-line-modified
-                       "  "
-                       ;; Buffer name
-                       (:propertize mode-line-buffer-identification
-                                    face font-lock-builtin-face)
-                       "  "
-                       ;; Position
-                       "%p (%l,%c)"
-                       "  "
-                       ;; Mode, recursive editing, and narrowing information
-                       "("
-                       (:propertize "%["
-                                    face font-lock-warning-face)
-                       mode-name
-                       (:propertize "%]"
-                                    face font-lock-warning-face)
-                       (:eval (if (buffer-narrowed-p)
-                                  (concat " "
-                                          (propertize "Narrow"
-                                                      'face 'font-lock-warning-face))))
-                       ")"
-                       ;; Version control
-                       (:eval (when vc-mode
-                                (concat " "
-                                        vc-mode)))
-                       ;; Miscellaneous information
-                       "  "
-                       mode-line-misc-info
+       (customize-set-variable 'mode-line-format
+                               '("%e"
+                                 mode-line-front-space
+                                 mode-line-client
+                                 mode-line-remote
+                                 mode-line-mule-info
+                                 mode-line-modified
+                                 "  "
+                                 ;; Buffer name
+                                 (:propertize mode-line-buffer-identification
+                                              face font-lock-builtin-face)
+                                 "  "
+                                 ;; Position
+                                 "%p (%l,%c)"
+                                 "  "
+                                 ;; Mode, recursive editing, and narrowing information
+                                 "("
+                                 (:propertize "%["
+                                              face font-lock-warning-face)
+                                 mode-name
+                                 (:propertize "%]"
+                                              face font-lock-warning-face)
+                                 (:eval (if (buffer-narrowed-p)
+                                            (concat " "
+                                                    (propertize "Narrow"
+                                                                'face 'font-lock-warning-face))))
+                                 ")"
+                                 ;; Version control
+                                 (:eval (when vc-mode
+                                          (concat " "
+                                                  vc-mode)))
+                                 ;; Miscellaneous information
+                                 "  "
+                                 mode-line-misc-info
 
-                       (:eval (*-mode-line-fill (+ (length battery-mode-line-string)
-                                                   1
-                                                   (length display-time-string))))
-                       battery-mode-line-string
-                       " "
-                       display-time-string))
+                                 (:eval (*-mode-line-fill (+ (length battery-mode-line-string)
+                                                             1
+                                                             (length display-time-string))))
+                                 battery-mode-line-string
+                                 " "
+                                 display-time-string))
      #+END_SRC
 ** Modes
 
@@ -1667,7 +1668,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Specify Scheme program name.
 
      #+BEGIN_SRC emacs-lisp
-       (setq scheme-program-name "guile")
+       (customize-set-variable 'scheme-program-name "guile")
      #+END_SRC
 
    - Function to run inferior Scheme process in other window.
@@ -2144,8 +2145,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        (when (string= system-type "darwin")
-         (setq mac-command-modifier 'meta)
-         (setq mac-option-modifier nil))
+         (customize-set-variable 'mac-command-modifier 'meta)
+         (customize-set-variable 'mac-option-modifier nil))
      #+END_SRC
 
 * License
