@@ -1560,6 +1560,9 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      horizontal rules.
 
      #+BEGIN_SRC emacs-lisp
+       (dolist (mode '(clojure-mode clojurec-mode clojurescript-mode clojurex-mode))
+         (cl-pushnew mode page-break-lines-modes))
+
        (global-page-break-lines-mode)
      #+END_SRC
 
