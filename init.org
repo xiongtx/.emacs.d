@@ -1788,19 +1788,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (define-key sgml-mode-map (kbd "C-c w u") #'browse-url-of-buffer))
      #+END_SRC
 
-   - Use =web-beautify=.
-
-     #+BEGIN_SRC emacs-lisp
-       (with-eval-after-load 'sgml-mode
-         (add-hook 'sgml-mode-hook
-                    (lambda ()
-                      (add-hook 'before-save-hook
-                                #'web-beautify-html-buffer t t))))
-
-       (with-eval-after-load 'sgml-mode
-         (define-key sgml-mode-map (kbd "C-c w b") #'web-beautify-html))
-     #+END_SRC
-
 ** Shell
    - In =shell-mode=, use =helm-comint-input-ring= for
      =comint-dynamic-list-input-ring=, which lists the input history.
