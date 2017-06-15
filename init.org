@@ -51,7 +51,6 @@
    - [[#helm-descbinds][Helm Descbinds]]
    - [[#info][Info]]
    - [[#javascript][JavaScript]]
-   - [[#json][JSON]]
    - [[#keyboard-macro][Keyboard Macro]]
    - [[#latex][LaTeX]]
    - [[#line-and-column-numbers][Line and Column Numbers]]
@@ -1239,19 +1238,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                                'web-beautify-js-buffer t t))))
        (with-eval-after-load 'js2-mode
          (define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
-     #+END_SRC
-** JSON
-   - Use =web-beautify=.
-
-     #+BEGIN_SRC emacs-lisp
-       (with-eval-after-load 'json-mode
-         (add-hook 'json-mode-hook
-                    (lambda ()
-                      (add-hook 'before-save-hook
-                                #'web-beautify-js-buffer t t))))
-
-       (with-eval-after-load 'json-mode
-         (define-key json-mode-map (kbd "C-c b") #'web-beautify-js))
      #+END_SRC
 ** Keyboard Macro
    - Use =helm= for keyboard macros.
