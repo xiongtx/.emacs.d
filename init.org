@@ -697,20 +697,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (add-hook 'css-mode-hook #'rainbow-mode)
      #+END_SRC
 
-   - Define function to clean up Sass file.
-
-   - Beautify the buffer with =web-beautify=.
-
-     #+BEGIN_SRC emacs-lisp
-       ;; (add-hook 'css-mode-hook
-       ;;           (lambda ()
-       ;;             (add-hook 'before-save-hook
-       ;;                       'web-beautify-css-buffer t t)))
-
-       (with-eval-after-load 'css-mode
-         (define-key css-mode-map (kbd "C-c b") #'web-beautify-css))
-     #+END_SRC
-
 ** Cursor
   - Do not blink the cursor.
 
