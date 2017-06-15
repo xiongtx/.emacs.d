@@ -1319,6 +1319,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (if (executable-find "pandoc")
            (customize-set-variable 'markdown-command "pandoc"))
      #+END_SRC
+
+   - Don't hide URLs.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'markdown-hide-urls nil)
+     #+END_SRC
 ** Menubar and Toolbar
   - Disable the menu bar, but make it toggleable, since menus can be useful
     for exploring new modes.
