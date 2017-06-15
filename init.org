@@ -15,6 +15,9 @@
    - [[#tangling][Tangling]]
    - [[#automatic-tangling][Automatic tangling]]
  - [[#package-management][Package Management]]
+ - [[#utils][Utils]]
+   - [[#requires][Requires]]
+   - [[#doc-pop-up][Doc pop-up]]
  - [[#configurations][Configurations]]
    - [[#about-emacs][About Emacs]]
    - [[#about-me][About Me]]
@@ -208,6 +211,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              popwin
                              projectile
                              python-mode
+                             quick-peek
                              rainbow-mode
                              scss-mode
                              slime
@@ -264,6 +268,51 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
       (define-key help-map "p" 'hydra-package/body)
     #+END_SRC
+
+* Utils
+
+  Utility functions, etc. that need to be fined ahead of time.
+
+** Requires
+
+   Require various libraries.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'cl-lib)
+     (require 'subr-x)
+   #+END_SRC
+
+** Doc pop-up
+
+   Macro to create function that provides documentation in a pop-up window.
+
+  #+BEGIN_SRC emacs-lisp
+    (require 'quick-peek)
+    (set-face-attribute 'quick-peek-border-face nil :height 20)
+
+    (defmacro *-make-doc-command (doc-fun sym-fun)
+      "Return an command that uses `quick-peek' to preview docs.
+
+    DOC-FUN is a unary function that takes a loop-up string and
+    returns the doc string.
+
+    SYM-FUN is a nullary function that gets the symbol at point as a
+    string."
+      `(lambda ()
+         (interactive)
+         (let ((doc (funcall ,doc-fun (funcall ,sym-fun))))
+           (if (string-empty-p doc)
+               (message "Unknown symbol, or no documentation available.")
+             (let ((map (make-sparse-keymap)))
+               (dolist (scroll-key (where-is-internal #'mwheel-scroll))
+                 (define-key map scroll-key #'mwheel-scroll))
+               (define-key map [t] #'quick-peek-hide)
+               (set-transient-map map t))
+             (let ((pos (save-excursion
+                          (beginning-of-line)
+                          (point))))
+               (quick-peek-show doc pos nil (frame-height)))))))
+  #+END_SRC
 
 * Configurations
 ** About Emacs
@@ -457,17 +506,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
            (when buf
              (with-current-buffer buf
                (buffer-substring (point-min)
-                                 ; `-10' to exclude "[source]" line
+                                 ;; `-10' to exclude "[source]" line
                                  (- (point-max) 10))))))
 
        (defun *-cider-doc-popup ()
          "Display CIDER documentation in a popup."
          (interactive)
-         (let ((doc (*-cider-symbol-full-doc (cider-symbol-at-point)))
-               (x-gtk-use-system-tooltips nil))
-           (if (string= "" doc)
-               (message "Unknown symbol, or no documentation available.")
-             (pos-tip-show doc 'tooltip nil nil -1))))
+         (funcall (*-make-doc-command #'*-cider-symbol-full-doc #'cider-symbol-at-point)))
 
        (defun *-cider-doc-popup-on ()
          "Turn `*-cider-doc-popup' by binding it to an appropriate key."
@@ -778,28 +823,17 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      (add-hook 'lisp-interaction-mode-hook #'eldoc-mode)
    #+END_SRC
 
-   - Use [[http://www.emacswiki.org/emacs/PosTip][pos-tip]] to create documentation pop-up for Emacs Lisp. Heavily
+   - Use [[https://github.com/cpitclaudel/quick-peek][quick-peek]] to create documentation pop-up for Emacs Lisp. Heavily
      inspired by [[http://blog.jenkster.com/2013/12/popup-help-in-emacs-lisp.html][Popup Help in Emacs Lisp]] and [[https://github.com/Fuco1/clippy.el][clippy]].
 
      #+BEGIN_SRC emacs-lisp :tangle yes
-       (require 'pos-tip)
-
-       (defun *-describe-symbol-popup ()
-         "Display full documentation of symbol in a pop-up window."
-         (interactive)
-         (let ((doc (*-symbol-full-doc (symbol-at-point)))
-               (x-gtk-use-system-tooltips nil))
-           (if (string= "" doc)
-               (message "Unknown symbol, or no documentation available.")
-             (pos-tip-show doc 'tooltip nil nil -1))))
-
        (defmacro *-symbol-full-doc (symbol)
          "Return a string of the full documentation of SYMBOL, as given by
        `help-xref-interned'.
 
        If `popwin-mode' is active, disable it temporarily. The value of
        `popwin-mode' is thus always nil, even when the mode is active.'"
-         (let* ((sym (make-symbol " sym "))
+         (let* ((sym (cl-gensym "doc"))
                 (form `(let ((,sym ,symbol))
                          (save-window-excursion
                            (with-temp-buffer
@@ -815,7 +849,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                     (popwin-mode (or old-popwin -1))))
              ,form)))
 
-       ;;;; Key bindings
+       (defun *-describe-symbol-popup ()
+         "Display full documentation of symbol in a pop-up window."
+         (interactive)
+         (funcall (*-make-doc-command (lambda (symbol)
+                                        (*-symbol-full-doc symbol))
+                                      #'symbol-at-point)))
+
        (define-key help-map "j" #'*-describe-symbol-popup)
        (define-key help-map (kbd "C-j") #'*-describe-symbol-popup)
      #+END_SRC
@@ -1445,14 +1485,13 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (defun *-octave-help (f)
          "Return docs of function F as string."
          (inferior-octave-send-list-and-digest (list (format "help ('%s');\n" f)))
-         (mapconcat #'identity inferior-octave-output-list "\n"))
+         (string-join inferior-octave-output-list "\n"))
 
-       (defun *-octave-doc-popup (f)
+       (defun *-octave-doc-popup ()
          "Display documentation of an Octave function in a pop-up
        window."
-         (interactive (list (symbol-at-point)))
-         (let ((x-gtk-use-system-tooltips nil))
-           (pos-tip-show (*-octave-help f) 'tooltip nil nil -1 nil nil nil 0)))
+         (interactive)
+         (funcall (*-make-doc-command #'octave-help #'symbol-at-point)))
 
        (defun *-octave-doc-popup-on ()
          "Turn `*-octave-doc-popup' by binding it to an appropriate
