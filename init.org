@@ -234,7 +234,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
   - Define a function to easily upgrade all packages and delete obsolete ones.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (defun *-package-upgrade ()
         "Upgrade all packages"
         (interactive)
@@ -248,7 +248,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
   - Use a hydra, along with =helm=, to create a package-related menu.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp
       (defhydra hydra-package (:color blue)
         "
       Packages                                                           [_q_] quit
@@ -441,7 +441,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Revert buffer with =<f5>= (refresh).
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "<f5>") #'revert-buffer)
      #+END_SRC
 
@@ -552,7 +552,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Open files in =lisp-mode=.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        ;; The SBCL configuration file is in Common Lisp
        (add-to-list 'auto-mode-alist '("\\.sbclrc\\'" . lisp-mode))
 
@@ -562,26 +562,26 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Settings for [[https://github.com/slime/slime][SLIME]] (Superior Lisp Interaction Mode for Emacs).
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (setq inferior-lisp-program "/usr/bin/sbcl --noinform")
        (setq slime-contribs '(slime-fancy))
      #+END_SRC
 
    - Use [[https://github.com/anwyn/slime-company][slime-company]], which integrates =company-mode= with SLIME.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (add-to-list 'slime-contribs 'slime-company)
      #+END_SRC
 
    - Set up SLIME contribs.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (slime-setup)
      #+END_SRC
 
    - Create SLIME REPL when visiting Common Lisp file.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (defun *-slime-create-or-switch-to ()
          "Start an inferior Lisp process and connect to its Swank
        server if none exists, or switch to existing one.
@@ -609,7 +609,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Use =hyperspec= commands with SLIME.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (with-eval-after-load 'slime
          (define-key slime-mode-map (kbd "C-c C-d C-s") #'common-lisp-hyperspec))
      #+END_SRC
@@ -637,14 +637,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Show quick-access numbers of completion options.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (customize-set-variable 'company-show-numbers t)
      #+END_SRC
 
    - Use [[https://github.com/expez/company-quickhelp][company-quickhelp]], which shows a documentation pop-up during
      =company-mode= completion.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (company-quickhelp-mode t)
 
        ;; Do not show pop-up automatically
@@ -724,7 +724,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Some functionality is turned off by default to avoid confusing new
      users. Turn them back on.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (put 'erase-buffer 'disabled nil)
        (put 'narrow-to-defun 'disabled nil)
        (put 'narrow-to-page 'disabled nil)
@@ -798,7 +798,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Associated common websites with major modes.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (customize-set-variable 'edit-server-url-major-mode-alist
                                '(("github\\.com" . markdown-mode)
                                  ("reddit\\.com" . markdown-mode)
@@ -814,7 +814,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Use [[http://www.emacswiki.org/emacs/ElDoc][eldoc-mode]], which shows function signatures in the echo area.
 
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp
      ;; Don't delay `eldoc' display
      (customize-set-variable 'eldoc-idle-delay 0)
 
@@ -826,7 +826,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Use [[https://github.com/cpitclaudel/quick-peek][quick-peek]] to create documentation pop-up for Emacs Lisp. Heavily
      inspired by [[http://blog.jenkster.com/2013/12/popup-help-in-emacs-lisp.html][Popup Help in Emacs Lisp]] and [[https://github.com/Fuco1/clippy.el][clippy]].
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (defmacro *-symbol-full-doc (symbol)
          "Return a string of the full documentation of SYMBOL, as given by
        `help-xref-interned'.
@@ -998,7 +998,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Fringe
    - Hide fringes.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (fringe-mode 0)
      #+END_SRC
 
@@ -1171,7 +1171,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Access commonly-used Info files through a hydra.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (defhydra hydra-helm-info (:color blue)
          "
        Common Lisp                                    [_a_] all  [_d_] dir  [_r_] resume
@@ -1276,7 +1276,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Use [[https://github.com/joddie/macrostep/blob/master/macrostep.el][macrostep]], an interactive macro expanding tool. Great for checking
      what your macro is expanding to!
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        ;; `C-x e' is usually kmacro-end-and-call-macro, which we never use
        (define-key ctl-x-map "e" #'macrostep-expand)
 
@@ -1315,7 +1315,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Markdown
    - Use [[http://pandoc.org/][pandoc]] as Markdown converter.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (if (executable-find "pandoc")
            (customize-set-variable 'markdown-command "pandoc"))
      #+END_SRC
@@ -1348,7 +1348,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Mode Line
    - Show time in the mode line.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        ;; Display time
        (display-time-mode t)
 
@@ -1367,7 +1367,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Show battery information in the mode line.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (display-battery-mode t)
 
        ;; Remove battery-mode-line-string from global-mode-string
@@ -1380,7 +1380,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      mode line, we fill the mode line with spaces. This is adapted from [[http://stackoverflow.com/a/22971471/864684][Nicolas
      Rougier's StackOverflow Answer]] on this issue.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (defun *-mode-line-fill (reserve)
          "Return empty space using FACE and leaving RESERVE space on the right."
          (unless reserve
@@ -1672,7 +1672,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Projectile
    - Use [[https://github.com/bbatsov/projectile][projectile]], a project interaction library, with =helm-projectile=.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (projectile-global-mode t)
 
        ;; Use helm-projectile
@@ -1688,7 +1688,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Unbind =C-z=, =C-x C-z=, which by default are bound to
      ~suspend-frame~. No need to waste a precious =C-= key on this.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        (global-unset-key (kbd "C-z"))
        (global-unset-key (kbd "C-x C-z"))
      #+END_SRC
@@ -1782,7 +1782,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
    - Use custom pair insertion commands.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp
        ;; Without an argument, `insert-parentheses' inserts a pair of parentheses at
        ;; point. We don't need that since we use `smartparens', so make wrapping next
        ;; sexp the default behavior.
