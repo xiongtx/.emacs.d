@@ -843,6 +843,26 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (define-key help-map "j" #'*-describe-symbol-popup)
        (define-key help-map (kbd "C-j") #'*-describe-symbol-popup)
      #+END_SRC
+
+  - Switch to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Lisp-Interaction.html][IELM]] buffer in other window.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun *-switch-to-ielm-buffer ()
+        "Interactively evaluate Emacs Lisp expressions.
+
+      Switches to the buffer `*ielm*' in another window."
+        (interactive)
+        (require 'ielm)
+        (let (old-point)
+          (unless (comint-check-proc "*ielm*")
+            (with-current-buffer (get-buffer-create "*ielm*")
+              (unless (zerop (buffer-size)) (setq old-point (point)))
+              (inferior-emacs-lisp-mode)))
+          (pop-to-buffer "*ielm*")
+          (when old-point (push-mark old-point))))
+
+      (define-key emacs-lisp-mode-map (kbd "C-c C-z") #'*-switch-to-ielm-buffer)
+    #+END_SRC
 ** Emmet
    - Move cursor between first pair of quotes after expansion.
 
