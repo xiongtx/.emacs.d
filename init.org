@@ -602,7 +602,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                (set-window-buffer (selected-window)
                                   (slime-output-buffer))))))
 
-       (add-hook 'lisp-mode-hook #'*-slime-create-or-switch-to)
+       ;; (add-hook 'lisp-mode-hook #'*-slime-create-or-switch-to)
      #+END_SRC
 
    - Use =hyperspec= commands with SLIME.
