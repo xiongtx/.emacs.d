@@ -911,6 +911,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (defun *-eshell-clear ()
          "Clear `eshell' buffer, comint-style."
          (interactive)
+         (goto-char (point-max))
          (let ((input (eshell-get-old-input)))
            (eshell/clear-scrollback)
            (eshell-emit-prompt)
