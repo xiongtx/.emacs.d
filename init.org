@@ -495,7 +495,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (add-hook 'cider-mode-hook #'helm-cider-mode))
      #+END_SRC
 
-   - Look up Clojure documentation in a pop-up with CIDER's functionality.
+   - Look up Clojure documentation in a pop-up with CIDER.
 
      #+BEGIN_SRC emacs-lisp
        (defun *-cider-symbol-full-doc (symbol)
