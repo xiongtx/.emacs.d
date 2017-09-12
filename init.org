@@ -515,6 +515,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        (defun *-cider-doc-popup-on ()
          "Turn `*-cider-doc-popup' by binding it to an appropriate key."
+         (define-key cider-mode-map (kbd "C-h j") #'*-cider-doc-popup)
          (define-key cider-mode-map (kbd "C-h C-j") #'*-cider-doc-popup))
 
        ;; Only use pop-up documentation when CIDER is connected
@@ -637,6 +638,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        (defun *-slime-doc-popup-on ()
          "Use `*-slime-doc-popup' by binding it to an appropriate key."
+         (define-key slime-mode-map (kbd "C-h j") #'*-slime-doc-popup)
          (define-key slime-mode-map (kbd "C-h C-j") #'*-slime-doc-popup))
 
        (add-hook 'slime-connected-hook #'*-slime-doc-popup-on)
