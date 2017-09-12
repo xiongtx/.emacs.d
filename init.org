@@ -303,10 +303,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
            (if (string-empty-p doc)
                (message "Unknown symbol, or no documentation available.")
              (let ((map (make-sparse-keymap)))
-               (dolist (scroll-key (where-is-internal #'mwheel-scroll))
-                 (define-key map scroll-key #'mwheel-scroll))
-               (define-key map [t] #'quick-peek-hide)
-               (set-transient-map map t))
+               (set-transient-map map
+                                  (lambda ()
+                                    (eq #'mwheel-scroll this-command))
+                                  (lambda ()
+                                    (quick-peek-hide)
+                                    (setq this-command #'ignore))))
              (let ((pos (save-excursion
                           (beginning-of-line)
                           (point))))
