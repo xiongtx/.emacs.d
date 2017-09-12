@@ -613,6 +613,35 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (define-key slime-mode-map (kbd "C-c C-d C-s") #'common-lisp-hyperspec))
      #+END_SRC
 
+   - Look up Common Lisp documentation in a pop-up with SLIME.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-slime-symbol-full-doc (symbol)
+         "Return a string of the full documentation of SYMBOL.
+
+       First `slime-documentation' is tried.  If there is no
+       documentation, `slime-describe-symbol' is tried."
+         (let ((symbol (if (stringp symbol) symbol (symbol-name symbol)))
+               (package (slime-current-package)))
+           (let ((doc (slime-eval `(swank:documentation-symbol ,symbol) package)))
+             (if (string-prefix-p "No such symbol" doc)
+                 ""
+               (if (string-suffix-p "Not documented." doc)
+                   (slime-eval `(swank:describe-symbol ,symbol) package)
+                 doc)))))
+
+       (defun *-slime-doc-popup ()
+         "Display CIDER documentation in a popup."
+         (interactive)
+         (funcall (*-make-doc-command #'*-slime-symbol-full-doc #'slime-symbol-at-point)))
+
+       (defun *-slime-doc-popup-on ()
+         "Use `*-slime-doc-popup' by binding it to an appropriate key."
+         (define-key slime-mode-map (kbd "C-h C-j") #'*-slime-doc-popup))
+
+       (add-hook 'slime-connected-hook #'*-slime-doc-popup-on)
+     #+END_SRC
+
 ** Company
    - Use [[http://company-mode.github.io/][company-mode]], a modular in-buffer completion framework for Emacs.
 
