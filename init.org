@@ -672,6 +672,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (customize-set-variable 'company-show-numbers t)
      #+END_SRC
 
+   - Align annotations.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'company-tooltip-align-annotations t)
+     #+END_SRC
+
    - Use [[https://github.com/expez/company-quickhelp][company-quickhelp]], which shows a documentation pop-up during
      =company-mode= completion.
 
