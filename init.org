@@ -1830,7 +1830,23 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (move-past-close-and-reindent)
          (insert-parentheses))
 
+       (defun *-move-past-close-and-reindent-brackets ()
+         "Like `move-past-close-and-reindent', but inserts a pair of
+         brackets."
+         (interactive)
+         (move-past-close-and-reindent)
+         (*-insert-brackets))
+
+       (defun *-move-past-close-and-reindent-braces ()
+         "Like `move-past-close-and-reindent', but inserts a pair of
+         braces."
+         (interactive)
+         (move-past-close-and-reindent)
+         (*-insert-braces))
+
        (global-set-key (kbd "C-M-0") #'*-move-past-close-and-reindent)
+       (global-set-key (kbd "C-M-]") #'*-move-past-close-and-reindent-brackets)
+       (global-set-key (kbd "C-M-}") #'*-move-past-close-and-reindent-braces)
      #+END_SRC
 
 ** SGML
