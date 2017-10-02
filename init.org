@@ -1926,10 +1926,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (define-key smartparens-mode-map (kbd "C-M-<backspace>") #'sp-splice-sexp-killing-backward)
        (define-key smartparens-mode-map (kbd "C-S-<backspace>") #'sp-splice-sexp-killing-around)
 
-       (define-key smartparens-mode-map (kbd "C-]") #'sp-select-next-thing-exchange)
-       (define-key smartparens-mode-map (kbd "C-<left_bracket>") #'sp-select-previous-thing)
-       (define-key smartparens-mode-map (kbd "C-M-]") #'sp-select-next-thing)
-
        ;; Indent
        (define-key smartparens-mode-map (kbd "C-M-<tab>") #'sp-indent-defun)
      #+END_SRC
