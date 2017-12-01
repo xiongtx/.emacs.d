@@ -196,6 +196,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              helm-describe-modes
                              helm-pages
                              helm-projectile
+                             htmlize
                              hydra
                              js2-mode
                              json-mode
