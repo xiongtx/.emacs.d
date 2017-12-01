@@ -25,6 +25,7 @@
   - [[#blog][Blog]]
   - [[#buffer][Buffer]]
   - [[#clojure][Clojure]]
+  - [[#clojurescript][ClojureScript]]
   - [[#comint][Comint]]
   - [[#comment][Comment]]
   - [[#common-lisp][Common Lisp]]
@@ -520,6 +521,18 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        ;; Only use pop-up documentation when CIDER is connected
        (add-hook 'cider-connected-hook #'*-cider-doc-popup-on)
+     #+END_SRC
+
+** ClojureScript
+
+   - Use [[https://github.com/bhauman/lein-figwheel][Figwheel]] when after ~cider-jack-in-clojurescript~. Thanks to [[https://markhudnall.com/2016/04/25/starting-figwheel-in-emacs/][Mark
+     Hudnall]].
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'cider-cljs-lein-repl
+                               "(do (require 'figwheel-sidecar.repl-api)
+                                    (figwheel-sidecar.repl-api/start-figwheel!)
+                                    (figwheel-sidecar.repl-api/cljs-repl))")
      #+END_SRC
 ** Comint
    - Make prompt read-only.
