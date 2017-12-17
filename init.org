@@ -208,6 +208,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              mediawiki
                              multiple-cursors
                              page-break-lines
+                             pdf-tools
                              popwin
                              projectile
                              quick-peek
