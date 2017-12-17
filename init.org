@@ -238,8 +238,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
         "Upgrade all packages"
         (interactive)
         (save-window-excursion
-          (with-temp-buffer
-            (package-list-packages)
+          (package-list-packages)
+          (with-current-buffer (get-buffer "*Packages*")
             (package-menu-mark-upgrades)
             (package-menu-mark-obsolete-for-deletion)
             (package-menu-execute t))))
