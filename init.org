@@ -479,6 +479,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (with-eval-after-load 'clojure-mode
          (add-hook 'clojure-mode-hook #'cider-mode))
 
+       (customize-set-variable 'cider-prompt-for-symbol nil)
        (customize-set-variable 'cider-repl-display-help-banner nil)
        (customize-set-variable 'cider-repl-use-pretty-printing t)
      #+END_SRC
