@@ -1622,6 +1622,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          (add-hook 'before-save-hook #'*-org-insert-toc))
      #+END_SRC
 
+   - Don't fontify source blocks natively.
+
+     #+BEGIN_SRC emacs-lisp
+       (customize-set-variable 'org-src-fontify-natively nil)
+     #+END_SRC
+
 ** Pages
    - Use [[https://github.com/purcell/page-break-lines][page-break-lines]] to convert form feed characters into
      horizontal rules.
