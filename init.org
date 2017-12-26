@@ -394,6 +394,17 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (aggressive-indent-global-mode 1)
      #+END_SRC
 
+   - Disable =aggressive-indent-mode= in shells, REPLs, etc.
+
+     #+BEGIN_SRC emacs-lisp
+       (dolist (mode '(cider-repl-mode
+                       comint-mode
+                       eshell-mode
+                       slime-repl-mode
+                       term-mode))
+         (add-to-list 'aggressive-indent-excluded-modes mode))
+     #+END_SRC
+
 ** Blog
    - Use ~org-publish~ to manage my [[http://xiongtx.github.io][GitHub blog]]. We need to set the
      ~org-publish-project-alist~ variable to publish projects.
