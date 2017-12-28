@@ -554,6 +554,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (customize-set-variable 'comint-prompt-read-only t)
      #+END_SRC
+
+   - Use ~comint-bol~ instead of ~move-beginning-of-line~
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'comint-mode
+         (define-key comint-mode-map (kbd "C-a") #'comint-bol))
+     #+END_SRC
+
 ** Comment
    - Comment or uncomment a region or line in a "do what I mean" fashion.
 
