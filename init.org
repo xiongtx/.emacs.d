@@ -1961,6 +1961,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (define-key smartparens-mode-map (kbd "C-M-e") #'sp-up-sexp)
        (define-key smartparens-mode-map (kbd "C-M-a") #'sp-backward-down-sexp)
        (define-key smartparens-mode-map (kbd "C-M-q") #'sp-backward-up-sexp)
+       (define-key smartparens-mode-map (kbd "C-M-`") #'beginning-of-defun)
 
        ;; Transpose
        (define-key smartparens-mode-map (kbd "C-M-t") 'sp-transpose-sexp)
