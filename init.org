@@ -232,18 +232,26 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
         (package-install package)))
     #+END_SRC
 
-  - Define a function to easily upgrade all packages and delete obsolete ones.
+  - Define a function to easily upgrade all packages and delete obsolete
+    ones. Thanks to [[https://emacs.stackexchange.com/a/38208/10269][@basil]] for pointers on ~package-menu-async~!
 
     #+BEGIN_SRC emacs-lisp
+
       (defun *-package-upgrade ()
-        "Upgrade all packages"
+        "Refresh, upgrade and delete obsolete packages synchronously."
         (interactive)
         (save-window-excursion
-          (package-list-packages)
-          (with-current-buffer (get-buffer "*Packages*")
-            (package-menu-mark-upgrades)
-            (package-menu-mark-obsolete-for-deletion)
-            (package-menu-execute t))))
+          (let (package-menu-async)
+            (package-list-packages)))
+        (with-current-buffer "*Packages*"
+          (package-menu-mark-upgrades)
+          (package-menu-mark-obsolete-for-deletion)
+          (condition-case err
+              (package-menu-execute t)
+            ;; Don't barf if there is nothing to do
+            (user-error (message "Nothing to do"))
+            ;; But allow other errors through
+            (error (signal (car err) (cdr err))))))
     #+END_SRC
 
   - Use a hydra, along with =helm=, to create a package-related menu.
