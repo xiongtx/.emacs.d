@@ -872,12 +872,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                                  ("stackoverflow\\.com" . markdown-mode)))
      #+END_SRC
 ** Elisp
-   - Indent ~cl-labels~ etc. [[https://oremacs.com/2015/01/28/notes-on-elisp-indentation/][like Common Lisp]].
-
-     #+BEGIN_SRC emacs-lisp
-       (customize-set-variable 'lisp-indent-function #'common-lisp-indent-function)
-     #+END_SRC
-
    - Use [[https://github.com/xiongtx/eros][eros]], which displays evaluation result overlays.
 
      #+BEGIN_SRC emacs-lisp
