@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: letrec
-# key: lr
-# binding: direct-keybinding
-# --
-(letrec (($1))
-  ($0))

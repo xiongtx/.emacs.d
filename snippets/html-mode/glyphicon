@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: glyphicon
-# key: bs:glyphicon
-# binding: direct-keybinding
-# --
-<span class="glyphicon ${1:glyphicon-align-left}" aria-hidden="true"></span>

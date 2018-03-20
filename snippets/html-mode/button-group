@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: button-group
-# key: bs:buttong
-# binding: direct-keybinding
-# --
-<div class="btn-group" role="group" aria-label="${1:label}">
-  $0
-</div>

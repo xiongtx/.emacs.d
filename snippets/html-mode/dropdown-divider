@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: dropdown-divider
-# key: bs:dddivider
-# binding: direct-keybinding
-# --
-<li class="divider" role="separator"></li>

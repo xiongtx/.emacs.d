@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: button
-# key: bs:button
-# binding: direct-keybinding
-# --
-<button class="btn btn-default" type="button">
-  $0
-</button>
