@@ -945,6 +945,27 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
       (define-key emacs-lisp-mode-map (kbd "C-c C-z") #'*-switch-to-ielm-buffer)
     #+END_SRC
+
+  - Eval and pretty print in other buffer.
+
+    #+BEGIN_SRC emacs-lisp
+      (define-minor-mode *-pp-buffer-mode
+        "Mode for `pp' buffers."
+        nil
+        (" PP tmp ")
+        '(("q" . (lambda () (interactive) (quit-restore-window)))))
+
+      (defun *-pp-eval-last-sexp ()
+        "Like `pp-eval-last-sexp', but better handles output buffer."
+        (interactive)
+        (pp-eval-expression (pp-last-sexp))
+        (pop-to-buffer "*Pp Eval Output*")
+        (goto-char (point-min))
+        (setq buffer-read-only t)
+        (*-pp-buffer-mode))
+
+      (define-key emacs-lisp-mode-map (kbd "C-c C-p") #'*-pp-eval-last-sexp)
+    #+END_SRC
 ** Emmet
    - Move cursor between first pair of quotes after expansion.
 
