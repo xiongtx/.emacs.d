@@ -1830,6 +1830,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Disable the scrollbar.
 
      #+BEGIN_SRC emacs-lisp
+       (require 'scroll-bar)
        (scroll-bar-mode 0)
      #+END_SRC
 
