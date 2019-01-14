@@ -1107,6 +1107,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Hide fringes.
 
      #+BEGIN_SRC emacs-lisp
+       (require 'fringe)
        (fringe-mode 0)
      #+END_SRC
 
