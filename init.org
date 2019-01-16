@@ -1752,6 +1752,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
      #+BEGIN_SRC emacs-lisp
        (projectile-global-mode t)
+       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
        ;; Use helm-projectile
        (customize-set-variable 'projectile-completion-system 'helm)
