@@ -71,6 +71,7 @@
   - [[#popwin][Popwin]]
   - [[#prettify-symbols][Prettify Symbols]]
   - [[#projectile][Projectile]]
+  - [[#python][Python]]
   - [[#quit][Quit]]
   - [[#sass][Sass]]
   - [[#scheme][Scheme]]
@@ -1761,6 +1762,21 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ;; Truncate long lines with helm
        ;; Only seems to affect helm-projectile
        (customize-set-variable 'helm-truncate-lines t)
+     #+END_SRC
+** Python
+
+   - Use ELPY
+
+     #+BEGIN_SRC emacs-lisp
+     (elpy-enable)
+     #+END_SRC
+
+   - Use ~python3~ when available.
+
+     #+BEGIN_SRC emacs-lisp
+       (when (executable-find "python3")
+         (customize-set-variable 'elpy-rpc-python-command "python3")
+         (customize-set-variable 'python-shell-interpreter "python3"))
      #+END_SRC
 
 ** Quit
