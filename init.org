@@ -1765,18 +1765,25 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 ** Python
 
-   - Use ELPY
-
-     #+BEGIN_SRC emacs-lisp
-     (elpy-enable)
-     #+END_SRC
-
    - Use ~python3~ when available.
 
      #+BEGIN_SRC emacs-lisp
        (when (executable-find "python3")
          (customize-set-variable 'elpy-rpc-python-command "python3")
          (customize-set-variable 'python-shell-interpreter "python3"))
+     #+END_SRC
+
+   - Use [[https://github.com/jorgenschaefer/elpy/][ELPY]].
+
+     #+BEGIN_SRC emacs-lisp
+     (elpy-enable)
+     #+END_SRC
+
+   - Remap some ELPY commands.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key elpy-mode-map (kbd "C-x C-e") #'elpy-shell-send-statement)
+       (define-key elpy-mode-map (kbd "C-M-x") #'elpy-shell-send-top-statement)
      #+END_SRC
 
 ** Quit
