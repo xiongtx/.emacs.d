@@ -149,7 +149,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (customize-set-variable 'package-archives
                               '(("gnu" . "http://elpa.gnu.org/packages/")
-                                ("melpa" . "http://melpa.milkbox.net/packages/")))
+                                ("melpa" . "https://melpa.org/packages/")))
     #+END_SRC
 
   - If the variable =package-enable-at-startup= is non-nil, package
