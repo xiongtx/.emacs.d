@@ -184,6 +184,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              discover-my-major
                              dockerfile-mode
                              edit-server
+			     elpy
                              emmet-mode
                              eros
                              expand-region
