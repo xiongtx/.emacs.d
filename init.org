@@ -184,7 +184,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              discover-my-major
                              dockerfile-mode
                              edit-server
-			     elpy
+                             elpy
                              emmet-mode
                              eros
                              expand-region
@@ -196,6 +196,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              helm-dash
                              helm-descbinds
                              helm-describe-modes
+                             helm-org
                              helm-pages
                              helm-projectile
                              htmlize
