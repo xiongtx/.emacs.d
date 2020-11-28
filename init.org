@@ -1770,9 +1770,12 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Use ~python3~ when available.
 
      #+BEGIN_SRC emacs-lisp
-       (when (executable-find "python3")
-         (customize-set-variable 'elpy-rpc-python-command "python3")
-         (customize-set-variable 'python-shell-interpreter "python3"))
+       (let ((python3-cmd (if (string= system-type "windows-nt")
+                              "py"
+                            "python3")))
+         (when (executable-find python3-cmd)
+           (customize-set-variable 'elpy-rpc-python-command python3-cmd)
+           (customize-set-variable 'python-shell-interpreter python3-cmd)))
      #+END_SRC
 
    - Use [[https://github.com/jorgenschaefer/elpy/][ELPY]].
