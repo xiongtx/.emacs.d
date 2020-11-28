@@ -50,6 +50,7 @@
   - [[#helm][Helm]]
   - [[#helm-dash][Helm Dash]]
   - [[#helm-descbinds][Helm Descbinds]]
+  - [[#image][Image]]
   - [[#info][Info]]
   - [[#javascript][JavaScript]]
   - [[#keyboard-macro][Keyboard Macro]]
@@ -1269,6 +1270,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        ;; Show binding descriptions in same window
        (customize-set-variable 'helm-descbinds-window-style 'split-window)
+     #+END_SRC
+
+** Image
+
+   - Fit image to window width.
+
+     #+BEGIN_SRC emacs-lisp
+     (customize-set-variable 'image-auto-resize 'fit-width)
      #+END_SRC
 
 ** Info
