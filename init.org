@@ -1280,6 +1280,11 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      (customize-set-variable 'image-auto-resize 'fit-width)
      #+END_SRC
 
+   - Don't cache images. The cache often causes Emacs to show an older version, leading to confusion.
+
+     #+BEGIN_SRC emacs-lisp
+     (customize-set-variable 'image-cache-eviction-delay 0)
+     #+END_SRC
 ** Info
    - Use better faces.
 
