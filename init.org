@@ -1635,11 +1635,16 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
     #+BEGIN_SRC emacs-lisp
       (global-set-key (kbd "C-c a") #'org-agenda)
-      (global-set-key (kbd "C-c b") #'org-iswitchb)
       (global-set-key (kbd "C-c c") #'org-capture)
       (global-set-key (kbd "C-c l") #'org-store-link)
       (global-set-key (kbd "C-c L") #'org-insert-link-global)
     #+END_SRC
+
+   - Get back old [[https://orgmode.org/manual/Structure-Templates.html][structured templates]] behavior, which was [[https://emacs.stackexchange.com/questions/46988/why-do-easy-templates-e-g-s-tab-in-org-9-2-not-work/46992#46992][removed in Orgmode 9.2]].
+
+     #+begin_src emacs-lisp
+       (require 'org-tempo)
+     #+end_src
 
    - Use Helm to jump to headlines.
 
