@@ -1795,7 +1795,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Use [[https://github.com/jorgenschaefer/elpy/][ELPY]].
 
      #+BEGIN_SRC emacs-lisp
-     (elpy-enable)
+       (elpy-enable)
      #+END_SRC
 
    - Remap some ELPY commands.
@@ -1803,6 +1803,16 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (define-key elpy-mode-map (kbd "C-x C-e") #'elpy-shell-send-statement)
        (define-key elpy-mode-map (kbd "C-M-x") #'elpy-shell-send-top-statement)
+       (define-key elpy-refactor-map (kbd "f") (cons (format "%sormat" (propertize "f" 'face 'bold))
+                                                     #'elpy-format-code))
+     #+END_SRC
+
+   - Use the [[https://github.com/psf/black][Black]] formatter when available.
+
+     #+BEGIN_SRC emacs-lisp
+       (with-eval-after-load 'elpy
+         (when (elpy-config--package-available-p 'black)
+           (customize-set-variable 'elpy-formatter 'black)))
      #+END_SRC
 
 ** Quit
