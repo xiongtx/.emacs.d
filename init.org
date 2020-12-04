@@ -45,6 +45,7 @@
   - [[#expand-region][Expand Region]]
   - [[#font][Font]]
   - [[#fill-column][Fill Column]]
+  - [[#file-files][File Files]]
   - [[#frame][Frame]]
   - [[#fringe][Fringe]]
   - [[#helm][Helm]]
@@ -1087,6 +1088,22 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (customize-set-variable 'fill-column 78)
     #+END_SRC
+
+** File Files
+
+   - Bind =C-x C-l= to ~find-file-literally~ instead of ~downcase-region~,
+     which is rarely used.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key ctl-x-map (kbd "C-l") #'find-file-literally)
+     #+END_SRC
+
+   - Bind =C-x f= to ~find-file~ instead of ~set-fill-column~, which is rarely
+     used. Also, I hit =C-x f= instead of =C-x C-f= way too often.
+
+     #+begin_src emacs-lisp
+       (define-key ctl-x-map "f" #'find-file)
+     #+end_src
 
 ** Frame
   - Make frame full-screen. We cannot use =toggle-frame-fullscreen= because no
