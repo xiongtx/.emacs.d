@@ -71,7 +71,6 @@
   - [[#pdf-tools][PDF Tools]]
   - [[#performance][Performance]]
   - [[#popwin][Popwin]]
-  - [[#prettify-symbols][Prettify Symbols]]
   - [[#projectile][Projectile]]
   - [[#python][Python]]
   - [[#quit][Quit]]
@@ -1767,25 +1766,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
         (customize-set-variable 'popwin:popup-window-height 0.5)
       #+END_SRC
 
-** Prettify Symbols
-   - Prettify symbols for all programming modes.
-
-     #+BEGIN_SRC emacs-lisp
-       (global-prettify-symbols-mode t)
-
-       (defvar *-prettify-symbols-alist
-         '(("lambda" . ?λ)
-           ("not" . ?¬)
-           ("not=" . ?≠)
-           ("/=" . ?≠)
-           ("!=" . ?≠)
-           (">=" . ?≥)
-           ("<=" . ?≤)))
-
-       (add-hook 'prog-mode-hook (lambda ()
-                                   (dolist (pair *-prettify-symbols-alist)
-                                     (push pair prettify-symbols-alist))))
-     #+END_SRC
 ** Projectile
    - Use [[https://github.com/bbatsov/projectile][projectile]], a project interaction library, with =helm-projectile=.
 
