@@ -1143,7 +1143,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      framework. See the [[https://github.com/thierryvolpiatto/emacs-tv-config/blob/master/.emacs.el][author's config file]] as a reference.
 
      #+BEGIN_SRC emacs-lisp
-       (require 'helm-config)
        (helm-mode t)
 
        ;;; Let helm use current window
