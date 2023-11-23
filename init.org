@@ -955,9 +955,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
     #+BEGIN_SRC emacs-lisp
       (define-minor-mode *-pp-buffer-mode
         "Mode for `pp' buffers."
-        nil
-        (" PP tmp ")
-        '(("q" . (lambda () (interactive) (quit-restore-window)))))
+        :init-value nil
+        :keymap '(("q" . (lambda () (interactive) (quit-restore-window)))))
 
       (defun *-pp-eval-last-sexp ()
         "Like `pp-eval-last-sexp', but better handles output buffer."
