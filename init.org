@@ -445,16 +445,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Buffer
    - Kill current buffer.
 
-     Do not use ~kill-current-buffer~, which is actually defined in
-     =menu-bar.el= and [[https://github.com/syl20bnr/spacemacs/issues/4929#issuecomment-221299989][has some weird logic]].
-
-     #+BEGIN_SRC emacs-lisp
-       (defun *-kill-this-buffer ()
-         "Kill the current buffer."
-         (interactive)
-         (kill-buffer (current-buffer)))
-
-       (global-set-key (kbd "C-c k") #'*-kill-this-buffer)
+     #+BEGIN_SRC
+       (global-set-key (kbd "C-c k") #'kill-this-buffer)
      #+END_SRC
 
    - Use unique buffer names. The =post-forward= style displays the buffer name
