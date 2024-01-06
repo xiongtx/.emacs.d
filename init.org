@@ -445,7 +445,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 ** Buffer
    - Kill current buffer.
 
-     #+BEGIN_SRC
+     #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c k") #'kill-this-buffer)
      #+END_SRC
 
