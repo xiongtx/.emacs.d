@@ -36,7 +36,6 @@
   - [[#default-functionality][Default Functionality]]
   - [[#default-major-mode][Default Major Mode]]
   - [[#dired][Dired]]
-  - [[#discover-my-major][Discover My Major]]
   - [[#ediff][Ediff]]
   - [[#edit-server][Edit Server]]
   - [[#elisp][Elisp]]
@@ -182,7 +181,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              company
                              company-auctex
                              company-quickhelp
-                             discover-my-major
                              dockerfile-mode
                              edit-server
                              elpy
@@ -804,14 +802,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (require 'dired-x)
        (add-hook 'dired-mode-hook #'dired-omit-mode)
-     #+END_SRC
-
-** Discover My Major
-   - Use [[https://github.com/steckerhalter/discover-my-major][discover-my-major]], which displays key bindings and their meaning for
-     the current Emacs major mode.
-
-     #+BEGIN_SRC emacs-lisp
-       (define-key help-map (kbd "C-k") #'discover-my-major)
      #+END_SRC
 
 ** Ediff
