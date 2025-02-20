@@ -49,7 +49,6 @@
   - [[#fringe][Fringe]]
   - [[#helm][Helm]]
   - [[#helm-comint][Helm Comint]]
-  - [[#helm-dash][Helm Dash]]
   - [[#helm-descbinds][Helm Descbinds]]
   - [[#image][Image]]
   - [[#info][Info]]
@@ -1250,22 +1249,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (use-package helm-comint
          :ensure t)
      #+end_src
-
-** Helm Dash
-   - Use [[https://github.com/areina/helm-dash][helm-dash]], a Helm interface for [[https://kapeli.com/dash][Dash]] docsets.
-
-     To use =helm-dash=, first install docsets via
-     ~helm-dash-install-docset~. Docsets are installed to
-     ~helm-dash-docsets-path~, which is =~/.docsets= by default.
-
-     #+BEGIN_SRC emacs-lisp
-       ;; Set `helm-dash' to `C-h d', which is normally `apropos-documentation'
-       (define-key help-map "d" 'helm-dash)
-
-       ;; Set minimum entry length to display docset elements
-       ;; 0 facilitates discoverability, but can be slow with too many docsets
-       (customize-set-variable 'helm-dash-min-length 0)
-     #+END_SRC
 
 ** Helm Descbinds
    - Use [[https://github.com/emacs-helm/helm-descbinds][helm-descbinds]] to present keybindings.
