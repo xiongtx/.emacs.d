@@ -1219,7 +1219,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
    - Turn off [[https://github.com/m2ym/popwin-el][popwin]] for Help buffers when using Helm and restore it after
-     existing Helm.
+     exiting Helm.
 
      In a two-window configuration, Helm will display the Help buffer from
      persistent action in the other window. Having =popwin= for Help buffers
