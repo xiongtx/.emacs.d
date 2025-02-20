@@ -48,6 +48,7 @@
   - [[#frame][Frame]]
   - [[#fringe][Fringe]]
   - [[#helm][Helm]]
+  - [[#helm-comint][Helm Comint]]
   - [[#helm-dash][Helm Dash]]
   - [[#helm-descbinds][Helm Descbinds]]
   - [[#image][Image]]
@@ -1241,6 +1242,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
        (add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
      #+END_SRC
+** Helm Comint
+
+   - Use [[https://github.com/emacs-helm/helm-comint][helm-comint]], which was taken out of Helm Core.
+
+     #+begin_src emacs-lisp
+       (use-package helm-comint
+         :ensure t)
+     #+end_src
 
 ** Helm Dash
    - Use [[https://github.com/areina/helm-dash][helm-dash]], a Helm interface for [[https://kapeli.com/dash][Dash]] docsets.
