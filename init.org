@@ -2293,7 +2293,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 * Mac OSX
+
 ** Keybindings
+   - [[https://apple.stackexchange.com/a/114269][Allow]] the use of =C-M-d=, logging out and back in afterwards:
+
+     #+begin_src sh
+       defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 70 '<dict><key>enabled</key><false/></dict>'
+     #+end_src
+
    - Use =Command= keys as =Meta= instead of =Super=.
 
      #+BEGIN_SRC emacs-lisp
@@ -2306,7 +2313,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
   My Emacs configurations written in Org mode.
 
-  Copyright (c) 2014-2017 Tianxiang Xiong
+  Copyright (c) 2014-2025 Tianxiang Xiong
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
