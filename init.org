@@ -73,7 +73,6 @@
   - [[#projectile][Projectile]]
   - [[#python][Python]]
   - [[#quit][Quit]]
-  - [[#sass][Sass]]
   - [[#scheme][Scheme]]
   - [[#scratch-buffer][Scratch Buffer]]
   - [[#scroll][Scroll]]
@@ -1799,19 +1798,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (global-unset-key (kbd "C-x C-c"))
      #+END_SRC
 
-** Sass
-   - Define a function to clean up a Sass file using the =sass-convert= tool.
-
-     #+BEGIN_SRC emacs-lisp
-       (defun *-cleanup-sass ()
-         "Clean up Sass file"
-         (interactive)
-         (shell-command
-          (format "/usr/local/bin/sass-convert %s %s"
-                  (shell-quote-argument (buffer-file-name))
-                  (shell-quote-argument (buffer-file-name))))
-         (revert-buffer t t t))
-     #+END_SRC
 ** Scheme
    - Specify Scheme program name.
 
