@@ -85,12 +85,10 @@
   - [[#spelling][Spelling]]
   - [[#splash-screen][Splash Screen]]
   - [[#tabs][Tabs]]
-  - [[#terminal-mode][Terminal Mode]]
   - [[#theme][Theme]]
   - [[#toggle][Toggle]]
   - [[#whitespace-cleanup][Whitespace Cleanup]]
   - [[#window-management][Window Management]]
-  - [[#yasnippet][YASnippet]]
 - [[#microsoft-windows][Microsoft Windows]]
   - [[#keybindings][Keybindings]]
 - [[#mac-osx][Mac OSX]]
@@ -222,7 +220,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              toc-org
                              use-package
                              yaml-mode
-                             yasnippet
                              zenburn-theme))
     #+END_SRC
 
@@ -1032,7 +1029,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (defun *-eshell-init ()
          "Init forms to run as part of `eshell-mode-hook'."
-         (yas-minor-mode -1)
          (toggle-truncate-lines 1)
          (smartparens-mode t)
          (define-key eshell-mode-map (kbd "C-c M-o") #'*-eshell-clear)
@@ -2082,14 +2078,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (setq-default tab-width 4)
      #+END_SRC
 
-** Terminal Mode
-   - Do not use =yasnippet= in =term-mode=.
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'term-mode-hook (lambda ()
-                                   (yas-minor-mode -1)))
-     #+END_SRC
-
 ** Theme
    - Use theme.
 
@@ -2134,10 +2122,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        [_t_] toggle-truncate-lines:      %`truncate-lines
        [_v_] visual-line-mode:           %`visual-line-mode
 
-       Expansion
-       ^^---------------------------------------------------------------------------
-       [_y_] yas-global-mode:            %`yas-global-mode
-
        Spelling and Syntax
        ^^---------------------------------------------------------------------------
        [_c_] flycheck-mode:              %s(if (boundp 'flycheck-mode) flycheck-mode 'nil)
@@ -2156,8 +2140,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          ("t" toggle-truncate-lines nil)
          ("v" visual-line-mode nil)
          ("w" whitespace-mode nil)
-         ("q" nil nil :color blue)
-         ("y" yas-global-mode nil))
+         ("q" nil nil :color blue))
 
        (define-key ctl-x-map "t" #'hydra-toggle/body)
      #+END_SRC
@@ -2265,18 +2248,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ("q" nil nil))
 
        (define-key ctl-x-map "w" #'hydra-window/body)
-     #+END_SRC
-** YASnippet
-   - Use [[https://github.com/capitaomorte/yasnippet][yasnippet]], a template system.
-
-      #+BEGIN_SRC emacs-lisp
-        (yas-global-mode t)
-      #+END_SRC
-
-   - Use =whitespace-mode= when writting snippets for YASnippet.
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'snippet-mode-hook #'whitespace-mode)
      #+END_SRC
 
 * Microsoft Windows
