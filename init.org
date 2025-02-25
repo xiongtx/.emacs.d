@@ -39,7 +39,6 @@
   - [[#ediff][Ediff]]
   - [[#edit-server][Edit Server]]
   - [[#elisp][Elisp]]
-  - [[#emmet][Emmet]]
   - [[#eshell][Eshell]]
   - [[#expand-region][Expand Region]]
   - [[#font][Font]]
@@ -181,7 +180,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              dockerfile-mode
                              edit-server
                              elpy
-                             emmet-mode
                              eros
                              expand-region
                              flycheck
@@ -756,12 +754,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (global-set-key (kbd "C-x c") #'*-last-compilation-buffer)
      #+END_SRC
 ** CSS
-   - Use =emmet-mode=.
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'css-mode-hook #'emmet-mode)
-     #+END_SRC
-
    - Use =rainbow-mode=.
 
      #+BEGIN_SRC emacs-lisp
@@ -947,21 +939,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
       (define-key emacs-lisp-mode-map (kbd "C-c C-p") #'*-pp-eval-last-sexp)
     #+END_SRC
-** Emmet
-   - Move cursor between first pair of quotes after expansion.
-
-     #+BEGIN_SRC emacs-lisp
-       (customize-set-variable 'emmet-move-cursor-between-quotes t)
-     #+END_SRC
-
-   - Do not use certain keybindings.
-
-     #+BEGIN_SRC emacs-lisp
-       (with-eval-after-load 'emmet-mode
-         (define-key emmet-mode-keymap (kbd "C-j") nil)
-         (define-key emmet-mode-keymap (kbd "C-M-<left>") nil)
-         (define-key emmet-mode-keymap (kbd "C-M-<right>") nil))
-     #+END_SRC
 
 ** Eshell
 
@@ -1930,12 +1907,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** SGML
-   - Use =emmet-mode= for all markup.
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'sgml-mode-hook #'emmet-mode)
-     #+END_SRC
-
    - View markup buffer in browser.
 
      #+BEGIN_SRC emacs-lisp
