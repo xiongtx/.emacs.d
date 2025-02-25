@@ -444,7 +444,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
    - Kill current buffer.
 
      #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-c k") #'kill-this-buffer)
+       (global-set-key (kbd "C-c k") #'kill-current-buffer)
      #+END_SRC
 
    - Use unique buffer names. The =post-forward= style displays the buffer name
