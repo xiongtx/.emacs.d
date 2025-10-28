@@ -1099,11 +1099,14 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (helm-mode t)
 
-       ;;; Let helm use current window
+       ;; Let helm use current window
        (customize-set-variable 'helm-split-window-default-side 'same)
 
        ;; Auto-complete file names when finding files
        (customize-set-variable 'helm-ff-auto-update-initial-value t)
+
+       ;; Use `rg' when grepping, and use default match face
+       (customize-set-variable 'helm-grep-ag-command "rg --smart-case --search-zip --no-heading --line-number %s -- %s %s")
      #+END_SRC
 
    - Change the prefix key for =helm= from =C-x c= to something else, because
