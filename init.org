@@ -173,6 +173,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
       (setq *-package-list '(aggressive-indent
                              auctex
                              cider
+                             clj-refactor
                              clojure-mode
                              company
                              company-auctex
