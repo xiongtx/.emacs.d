@@ -2077,12 +2077,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        (set-face-foreground 'vertical-border (face-background 'default))
      #+END_SRC
 
-   - Use better faces for theme.
-
-     #+begin_src emacs-lisp
-       (custom-theme-set-faces 'zenburn `(company-preview ((t (:inherit company-tooltip-selection)))))
-     #+end_src
-
    - Use a better face for ~eldoc-highlight-function-argument~.
 
      #+BEGIN_SRC emacs-lisp
