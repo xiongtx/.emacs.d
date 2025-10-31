@@ -1107,6 +1107,10 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        ;; Use `rg' when grepping, and use default match face
        (customize-set-variable 'helm-grep-ag-command "rg --color=never --smart-case --search-zip --no-heading --line-number %s -- %s %s")
+
+       ;; Show file path of grep matches
+       (customize-set-variable 'helm-grep-file-path-style 'relative)
+
      #+END_SRC
 
    - Change the prefix key for =helm= from =C-x c= to something else, because
