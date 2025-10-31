@@ -217,6 +217,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              smartparens
                              toc-org
                              use-package
+                             wgrep-helm
                              yaml-mode
                              zenburn-theme))
     #+END_SRC
@@ -1111,6 +1112,8 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
        ;; Show file path of grep matches
        (customize-set-variable 'helm-grep-file-path-style 'relative)
 
+       ;; Don't ask for confirmation when creating helm-grep buffer
+       (customize-set-variable 'helm-grep-save-buffer-name-no-confirm t)
      #+END_SRC
 
    - Change the prefix key for =helm= from =C-x c= to something else, because
