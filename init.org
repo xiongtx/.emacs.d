@@ -53,7 +53,6 @@
   - [[#info][Info]]
   - [[#javascript][JavaScript]]
   - [[#keyboard-macro][Keyboard Macro]]
-  - [[#latex][LaTeX]]
   - [[#line-and-column-numbers][Line and Column Numbers]]
   - [[#macros][Macros]]
   - [[#magit][Magit]]
@@ -171,12 +170,10 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
     #+BEGIN_SRC emacs-lisp
       (setq *-package-list '(aggressive-indent
-                             auctex
                              cider
                              clj-refactor
                              clojure-mode
                              company
-                             company-auctex
                              company-quickhelp
                              dockerfile-mode
                              edit-server
@@ -1319,12 +1316,7 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+BEGIN_SRC emacs-lisp
        (define-key kmacro-keymap "h" #'helm-execute-kmacro)
      #+END_SRC
-** LaTeX
-   - Use [[https://github.com/alexeyr/company-auctex/][company-auctex]] for LaTeX completion.
 
-     #+BEGIN_SRC emacs-lisp
-       (company-auctex-init)
-     #+END_SRC
 ** Line and Column Numbers
   - Display column numbers.
 
