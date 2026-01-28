@@ -177,7 +177,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
                              company-quickhelp
                              dockerfile-mode
                              edit-server
-                             elpy
                              eros
                              expand-region
                              flycheck
@@ -525,7 +524,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        (defun *-cider-doc-popup-on ()
          "Turn `*-cider-doc-popup' by binding it to an appropriate key."
-         (define-key cider-mode-map (kbd "C-h j") #'*-cider-doc-popup)
          (define-key cider-mode-map (kbd "C-h C-j") #'*-cider-doc-popup))
 
        ;; Only use pop-up documentation when CIDER is connected
@@ -668,7 +666,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
 
        (defun *-slime-doc-popup-on ()
          "Use `*-slime-doc-popup' by binding it to an appropriate key."
-         (define-key slime-mode-map (kbd "C-h j") #'*-slime-doc-popup)
          (define-key slime-mode-map (kbd "C-h C-j") #'*-slime-doc-popup))
 
        (add-hook 'slime-connected-hook #'*-slime-doc-popup-on)
@@ -1555,7 +1552,6 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
          "Turn `*-octave-doc-popup' by binding it to an appropriate
        key."
          (dolist (map (list octave-mode-map inferior-octave-mode-map))
-           (define-key map (kbd "C-h j") #'*-octave-doc-popup)
            (define-key map (kbd "C-h C-j") #'*-octave-doc-popup)))
 
        (add-hook 'octave-mode-hook #'*-octave-doc-popup-on)
@@ -1753,38 +1749,106 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 ** Python
 
-   - Use ~python3~ when available.
+   - Use [[https://github.com/joaotavora/eglot][eglot]] (built-in LSP client) with [[https://github.com/microsoft/pyright][pyright]] for Python development.
+     Install pyright globally: =uv tool install pyright=
 
      #+BEGIN_SRC emacs-lisp
-       (let ((python3-cmd (if (string= system-type "windows-nt")
-                              "py"
-                            "python3")))
-         (when (executable-find python3-cmd)
-           (customize-set-variable 'elpy-rpc-python-command python3-cmd)
-           (customize-set-variable 'python-shell-interpreter python3-cmd)))
+       (add-hook 'python-mode-hook #'eglot-ensure)
+       ;; Keep eldoc active but don't display in echo area; use C-h C-j for docs
+       (add-hook 'python-mode-hook
+                 (lambda ()
+                   (setq-local eldoc-display-functions
+                               (remq 'eldoc-display-in-echo-area eldoc-display-functions))))
      #+END_SRC
 
-   - Use [[https://github.com/jorgenschaefer/elpy/][ELPY]].
+   - Helper function to set the Python interpreter from a uv virtual environment.
 
      #+BEGIN_SRC emacs-lisp
-       (elpy-enable)
+       (defun *-python-set-venv (venv-path)
+         "Set Python interpreter to VENV-PATH's python and restart eglot."
+         (interactive "DSelect venv directory: ")
+         (let ((python-path (expand-file-name "bin/python" venv-path)))
+           (when (file-executable-p python-path)
+             (setq-local python-shell-interpreter python-path)
+             (when (eglot-managed-p)
+               (eglot-shutdown (eglot-current-server))
+               (eglot-ensure)))))
      #+END_SRC
 
-   - Remap some ELPY commands.
+   - Auto-detect uv/standard .venv in project root for the REPL.
 
      #+BEGIN_SRC emacs-lisp
-       (define-key elpy-mode-map (kbd "C-x C-e") #'elpy-shell-send-statement)
-       (define-key elpy-mode-map (kbd "C-M-x") #'elpy-shell-send-top-statement)
-       (define-key elpy-refactor-map (kbd "f") (cons (format "%sormat" (propertize "f" 'face 'bold))
-                                                     #'elpy-format-code))
+       (defun *-python-auto-venv ()
+         "Automatically activate .venv if present in project root."
+         (when-let* ((root (project-root (project-current)))
+                     (venv (expand-file-name ".venv" root))
+                     (python (expand-file-name "bin/python" venv)))
+           (when (file-executable-p python)
+             (setq-local python-shell-interpreter python))))
+
+       (add-hook 'python-mode-hook #'*-python-auto-venv)
      #+END_SRC
 
-   - Use the [[https://github.com/psf/black][Black]] formatter when available.
+   - Format with [[https://github.com/psf/black][black]].
 
      #+BEGIN_SRC emacs-lisp
-       (with-eval-after-load 'elpy
-         (when (elpy-config--package-available-p 'black)
-           (customize-set-variable 'elpy-formatter 'black)))
+       (defun *-python-format-buffer ()
+         "Format Python buffer with black."
+         (interactive)
+         (if (executable-find "black")
+             (let ((point-pos (point)))
+               (shell-command-on-region (point-min) (point-max) "black -q -" nil t)
+               (goto-char (min point-pos (point-max))))
+           (message "black not found in PATH")))
+
+       (with-eval-after-load 'python
+         (define-key python-mode-map (kbd "C-c C-f") #'*-python-format-buffer))
+     #+END_SRC
+
+   - Switch to Python shell, starting one if needed (like elpy's =C-c C-z=).
+     In the shell, =C-c C-z= switches back to the source buffer.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-python-shell-switch-to-shell ()
+         "Switch to inferior Python process buffer, starting one if needed."
+         (interactive)
+         (unless (python-shell-get-process)
+           (run-python))
+         (python-shell-switch-to-shell))
+
+       (with-eval-after-load 'python
+         (define-key python-mode-map (kbd "C-c C-z") #'*-python-shell-switch-to-shell)
+         (define-key inferior-python-mode-map (kbd "C-c C-z") #'other-window)
+         ;; Elpy-style send bindings
+         (define-key python-mode-map (kbd "C-x C-e") #'python-shell-send-statement)
+         (define-key python-mode-map (kbd "C-M-x") #'python-shell-send-defun)
+         (define-key python-mode-map (kbd "C-c C-r") #'python-shell-send-region))
+     #+END_SRC
+
+   - Display Python documentation in a popup using eldoc.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun *-python-eldoc-doc (_symbol)
+         "Get documentation from eldoc buffer."
+         (if (not (eglot-managed-p))
+             ""
+           ;; Force eldoc to refresh
+           (eldoc-print-current-symbol-info)
+           (sit-for 0.1)
+           ;; eldoc-doc-buffer creates the buffer if needed
+           (if-let ((buf (eldoc-doc-buffer)))
+               (with-current-buffer buf
+                 (buffer-string))
+             "")))
+
+       (defun *-python-doc-popup ()
+         "Display Python documentation in a popup."
+         (interactive)
+         (funcall (*-make-doc-command #'*-python-eldoc-doc
+                                      (lambda () (thing-at-point 'symbol t)))))
+
+       (with-eval-after-load 'python
+         (define-key python-mode-map (kbd "C-h C-j") #'*-python-doc-popup))
      #+END_SRC
 
 ** Quit
