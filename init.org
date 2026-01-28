@@ -1018,12 +1018,17 @@ Lars Tveito's excellent [[https://github.com/larstvei/dot-emacs/blob/master/init
      #+END_SRC
 
 ** Font
-   - Change the default font.
+   - Change the default font. Use a hook to ensure consistent sizing for both
+     direct Emacs and emacsclient frames.
 
      #+BEGIN_SRC emacs-lisp
-       (when (member "DejaVu Sans Mono" (font-family-list))
-           (let ((height (if (string= system-type "darwin") 120 110)))
-             (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height height)))
+       (defun *-set-font (&optional frame)
+         (let ((height (if (string= system-type "darwin") 120 110)))
+           (set-face-attribute 'default frame :family "DejaVu Sans Mono" :height height)))
+
+       (add-hook 'after-make-frame-functions #'*-set-font)
+       (unless (daemonp)
+         (*-set-font))
      #+END_SRC
 
 ** Fill Column
